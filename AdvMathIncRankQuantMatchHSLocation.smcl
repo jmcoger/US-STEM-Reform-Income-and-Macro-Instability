@@ -1,0 +1,88 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\logfiles\AdvMathIncRankQuantMatchHSLocation.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}22 Aug 2022, 11:13:36
+{txt}
+{com}. 
+. *Define the directory
+. global PATH "C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\dofiles_dtafiles"
+{txt}
+{com}. cd $PATH
+{res}C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\dofiles_dtafiles
+{txt}
+{com}. 
+. *import the location geocode data
+. import delimited "C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\rawdata\Location_R18.csv"
+{res}{text}(121 vars, 8,984 obs)
+
+{com}. 
+. *drop all other variables except id and location for ASVAB in 1997
+. keep r0000100 r1243000
+{txt}
+{com}. 
+. *rename id variable
+. rename r0000100 id
+{res}{txt}
+{com}. 
+. *rename 1997 location variable
+. rename r1243000 highschoolstate
+{res}{txt}
+{com}. 
+. *label id variable
+. label variable id "identification number"
+{txt}
+{com}. 
+. *label highschoolstate variable
+. label variable highschoolstate "state where high school was attended"
+{txt}
+{com}. 
+. *save dataset with id and highschoolstate 
+. save "AdvMathIncRankQuantMatchHSLocation.dta"
+{txt}file AdvMathIncRankQuantMatchHSLocation.dta saved
+
+{com}. 
+. *open the dissertation data with controls and dependent variables created
+. use "C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\dofiles_dtafiles\AdvMathIncRankQuantControlsDepVars.dta"
+{txt}
+{com}. 
+. *drop merge variable
+. drop _merge 
+{txt}
+{com}. 
+. *merge datasets to add highschoolstate variable 
+. merge 1:1 id using "C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\dofiles_dtafiles\AdvMathIncRankQuantMatchHSLocation.dta"
+{res}
+{txt}{col 5}Result{col 38}# of obs.
+{col 5}{hline 41}
+{col 5}not matched{col 30}{res}           5,442
+{txt}{col 9}from master{col 30}{res}               0{txt}  (_merge==1)
+{col 9}from using{col 30}{res}           5,442{txt}  (_merge==2)
+
+{col 5}matched{col 30}{res}           3,542{txt}  (_merge==3)
+{col 5}{hline 41}
+
+{com}. 
+. *drop non-matching cases
+. drop if cohort == .
+{txt}(5,442 observations deleted)
+
+{com}. 
+. *drop merge variable
+. drop _merge 
+{txt}
+{com}. 
+. *save dataset with high school state variable 
+. save "AdvMathIncRankQuantVarsLocation.dta"
+{txt}file AdvMathIncRankQuantVarsLocation.dta saved
+
+{com}. 
+. log close  
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\logfiles\AdvMathIncRankQuantMatchHSLocation.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}22 Aug 2022, 11:13:37
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}

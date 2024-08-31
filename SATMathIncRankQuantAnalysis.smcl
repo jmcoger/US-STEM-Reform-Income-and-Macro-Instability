@@ -1,0 +1,1307 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\jcoger\Documents\Essay1\SATMathWork\SATMathIncomeRankQuantileV1\logfiles\SATMathIncRankQuantAnalysis.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 7 Sep 2022, 12:26:35
+{txt}
+{com}. 
+. use "C:\Users\jcoger\Documents\Essay1\SATMathWork\SATMathIncomeRankQuantileV1\dofiles_dtafiles\SATMathIncRankQuantFinalDataset.dta"
+{txt}
+{com}. 
+. *Define the directory
+. global PATH "C:\Users\jcoger\Documents\Essay1\SATMathWork\SATMathIncomeRankQuantileV1\tables"
+{txt}
+{com}. cd $PATH
+{res}C:\Users\jcoger\Documents\Essay1\SATMathWork\SATMathIncomeRankQuantileV1\tables
+{txt}
+{com}. 
+. *install pdslasso package
+. ssc install pdslasso 
+{txt}checking {hilite:pdslasso} consistency and verifying not already installed...
+all files already exist and are up to date.
+
+{com}. 
+. *install lassopack package
+. ssc install lassopack 
+{txt}checking {hilite:lassopack} consistency and verifying not already installed...
+all files already exist and are up to date.
+
+{com}. 
+. *install qreg2 package
+. ssc install qreg2
+{txt}checking {hilite:qreg2} consistency and verifying not already installed...
+all files already exist and are up to date.
+
+{com}. 
+. ***Determine controls with instrument for regression using lasso estimator then use OLS to get estimate for effect of satmathscore on incomerank***
+. 
+. *Run pdslasso command to determine appropriate controls for estimating the coefficient of our independent variable with exposure to STEM reform partialled out
+. pdslasso incomerank satmathscore (exp advmathcreditsearned hsdiploma belowbachelors bachelorsabove hhsize97 female bothbioparents white avginc9799 averageincomepovratio9799 age totalmathcreditsgraduate c*), partial(c* exp hsdiploma belowbachelors bachelorsabove) cluster (highschoolstate) rlasso
+{res}{txt}Partialling out unpenalized controls...
+{res}{txt}1.  (PDS/CHS) Selecting HD controls for dep var incomerank...
+Selected: {res}{col 11}advmathcreditsearned female avginc9799
+{txt}2.  (PDS/CHS) Selecting HD controls for exog regressor satmathscore...
+Warning: unable to store lasso estimation
+Selected: {res}{col 11}advmathcreditsearned female white averageincomepovratio9799
+
+
+{txt}Estimation results:
+
+Specification:
+Regularization method:{col 40}{res}lasso
+{txt}Penalty loadings:{col 40}{res}cluster-lasso
+{txt}Number of observations:{col 40}{res}1,143
+{txt}Number of clusters:{col 40}{res}   41
+{txt}Exogenous (1):{res}{col 40}satmathscore
+{txt}High-dim controls (9):{res}{col 40}advmathcreditsearned hhsize97 female bothbioparents white avginc9799
+{col 40}averageincomepovratio9799 age totalmathcreditsgraduate
+{txt}Selected controls (5):{res}{col 40}advmathcreditsearned female white avginc9799 averageincomepovratio9799
+{txt}Partialled-out controls (9):{res}{col 40}c1 c2 c3 c4 c5 exp hsdiploma belowbachelors bachelorsabove
+
+{txt}lasso estimation(s):
+
+{stata estimates replay _pdslasso_step1_incomerank:_pdslasso_step1_incomerank}
+{hline 18}{c TT}{hline 32}
+{col 10}Selected {c |}           Lasso   Post-est OLS
+{hline 18}{c +}{hline 32}
+advmathcreditse~d {c |}{col 21}{res}      0.5665834      3.3235543
+{txt}{space 11}female {c |}{col 21}{res}    -11.1712684    -14.2531151
+{txt}{space 7}avginc9799 {c |}{col 21}{res}      0.0000430      0.0000891
+{txt}{hline 18}{c BT}{hline 32}
+
+Structural equation:
+
+OLS using CHS lasso-orthogonalized vars
+{res}{txt}{ralign 78:(Std. Err. adjusted for {res:41} clusters in highschoolstate)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}  incomerank{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+satmathscore {c |}{col 14}{res}{space 2} 1.707907{col 26}{space 2} .7058317{col 37}{space 1}    2.42{col 46}{space 3}0.016{col 54}{space 4} .3245025{col 67}{space 3} 3.091312
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+OLS using CHS post-lasso-orthogonalized vars
+{res}{txt}{ralign 78:(Std. Err. adjusted for {res:41} clusters in highschoolstate)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}  incomerank{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+satmathscore {c |}{col 14}{res}{space 2} 1.090891{col 26}{space 2} .6709628{col 37}{space 1}    1.63{col 46}{space 3}0.104{col 54}{space 4}-.2241714{col 67}{space 3} 2.405954
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+OLS with PDS-selected variables and full regressor set
+{res}{txt}{ralign 91:(Std. Err. adjusted for {res:41} clusters in highschoolstate)}
+{hline 26}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 27}{c |}{col 39}    Robust
+{col 1}               incomerank{col 27}{c |}      Coef.{col 39}   Std. Err.{col 51}      z{col 59}   P>|z|{col 67}     [95% Con{col 80}f. Interval]
+{hline 26}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 13}satmathscore {c |}{col 27}{res}{space 2} 1.077523{col 39}{space 2} .6723993{col 50}{space 1}    1.60{col 59}{space 3}0.109{col 67}{space 4}-.2403556{col 80}{space 3} 2.395401
+{txt}{space 5}advmathcreditsearned {c |}{col 27}{res}{space 2} 2.922904{col 39}{space 2} .9760087{col 50}{space 1}    2.99{col 59}{space 3}0.003{col 67}{space 4} 1.009962{col 80}{space 3} 4.835845
+{txt}{space 19}female {c |}{col 27}{res}{space 2}-13.80422{col 39}{space 2}  1.05828{col 50}{space 1}  -13.04{col 59}{space 3}0.000{col 67}{space 4}-15.87842{col 80}{space 3}-11.73003
+{txt}{space 20}white {c |}{col 27}{res}{space 2} .4152099{col 39}{space 2} 2.052212{col 50}{space 1}    0.20{col 59}{space 3}0.840{col 67}{space 4}-3.607052{col 80}{space 3} 4.437471
+{txt}{space 15}avginc9799 {c |}{col 27}{res}{space 2} .0001643{col 39}{space 2} .0000516{col 50}{space 1}    3.19{col 59}{space 3}0.001{col 67}{space 4} .0000632{col 80}{space 3} .0002653
+{txt}averageincomepovratio9799 {c |}{col 27}{res}{space 2}-1.273753{col 39}{space 2} .7625494{col 50}{space 1}   -1.67{col 59}{space 3}0.095{col 67}{space 4}-2.768322{col 80}{space 3} .2208165
+{txt}{space 23}c1 {c |}{col 27}{res}{space 2} 2.576197{col 39}{space 2} 2.261904{col 50}{space 1}    1.14{col 59}{space 3}0.255{col 67}{space 4}-1.857053{col 80}{space 3} 7.009447
+{txt}{space 23}c2 {c |}{col 27}{res}{space 2} 3.969438{col 39}{space 2}  2.81024{col 50}{space 1}    1.41{col 59}{space 3}0.158{col 67}{space 4} -1.53853{col 80}{space 3} 9.477407
+{txt}{space 23}c3 {c |}{col 27}{res}{space 2}-.0712469{col 39}{space 2} 2.402882{col 50}{space 1}   -0.03{col 59}{space 3}0.976{col 67}{space 4}-4.780809{col 80}{space 3} 4.638315
+{txt}{space 23}c4 {c |}{col 27}{res}{space 2} 1.670712{col 39}{space 2} 2.848187{col 50}{space 1}    0.59{col 59}{space 3}0.557{col 67}{space 4}-3.911632{col 80}{space 3} 7.253056
+{txt}{space 23}c5 {c |}{col 27}{res}{space 2}        0{col 39}{txt}  (omitted)
+{space 22}exp {c |}{col 27}{res}{space 2} .3019993{col 39}{space 2} .3509845{col 50}{space 1}    0.86{col 59}{space 3}0.390{col 67}{space 4}-.3859178{col 80}{space 3} .9899163
+{txt}{space 16}hsdiploma {c |}{col 27}{res}{space 2} 7.220731{col 39}{space 2} 5.600128{col 50}{space 1}    1.29{col 59}{space 3}0.197{col 67}{space 4}-3.755318{col 80}{space 3} 18.19678
+{txt}{space 11}belowbachelors {c |}{col 27}{res}{space 2} 4.457249{col 39}{space 2} 5.579607{col 50}{space 1}    0.80{col 59}{space 3}0.424{col 67}{space 4} -6.47858{col 80}{space 3} 15.39308
+{txt}{space 11}bachelorsabove {c |}{col 27}{res}{space 2} 22.98805{col 39}{space 2} 5.428619{col 50}{space 1}    4.23{col 59}{space 3}0.000{col 67}{space 4} 12.34815{col 80}{space 3} 33.62795
+{txt}{space 20}_cons {c |}{col 27}{res}{space 2} 23.02559{col 39}{space 2} 6.141331{col 50}{space 1}    3.75{col 59}{space 3}0.000{col 67}{space 4} 10.98881{col 80}{space 3} 35.06238
+{txt}{hline 26}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+Standard errors and test statistics valid for the following variables only:
+{col 5}satmathscore
+{hline 78}
+
+{com}. 
+. *advmathcreditsearned, female, white, avginc9799, averageincomepovratio9799 selected with lasso
+. 
+. *Run OLS with lasso selected controls 
+. regress incomerank satmathscore advmathcreditsearned hsdiploma belowbachelors bachelorsabove female bothbioparents white avginc9799thou averageincomepovratio9799 exp i.hscohort i.highschoolstate, robust cluster (highschoolstate)
+
+{txt}Linear regression                               Number of obs     = {res}     1,143
+                                                {txt}{help j_robustsingular:F(14, 40) }        =  {res}        .
+                                                {txt}Prob > F          = {res}         .
+                                                {txt}R-squared         = {res}    0.2804
+                                                {txt}Root MSE          =    {res} 25.074
+
+{txt}{ralign 91:(Std. Err. adjusted for {res:41} clusters in highschoolstate)}
+{hline 26}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 27}{c |}{col 39}    Robust
+{col 1}               incomerank{col 27}{c |}      Coef.{col 39}   Std. Err.{col 51}      t{col 59}   P>|t|{col 67}     [95% Con{col 80}f. Interval]
+{hline 26}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 13}satmathscore {c |}{col 27}{res}{space 2} .6477183{col 39}{space 2} .7365032{col 50}{space 1}    0.88{col 59}{space 3}0.384{col 67}{space 4}-.8408102{col 80}{space 3} 2.136247
+{txt}{space 5}advmathcreditsearned {c |}{col 27}{res}{space 2} 3.191992{col 39}{space 2} 1.066763{col 50}{space 1}    2.99{col 59}{space 3}0.005{col 67}{space 4} 1.035983{col 80}{space 3}    5.348
+{txt}{space 16}hsdiploma {c |}{col 27}{res}{space 2} 7.074231{col 39}{space 2} 6.392755{col 50}{space 1}    1.11{col 59}{space 3}0.275{col 67}{space 4}-5.846009{col 80}{space 3} 19.99447
+{txt}{space 11}belowbachelors {c |}{col 27}{res}{space 2} 5.487876{col 39}{space 2} 6.605627{col 50}{space 1}    0.83{col 59}{space 3}0.411{col 67}{space 4}-7.862594{col 80}{space 3} 18.83835
+{txt}{space 11}bachelorsabove {c |}{col 27}{res}{space 2}  22.7564{col 39}{space 2} 6.263313{col 50}{space 1}    3.63{col 59}{space 3}0.001{col 67}{space 4} 10.09777{col 80}{space 3} 35.41503
+{txt}{space 19}female {c |}{col 27}{res}{space 2}-13.69612{col 39}{space 2} 1.100889{col 50}{space 1}  -12.44{col 59}{space 3}0.000{col 67}{space 4} -15.9211{col 80}{space 3}-11.47114
+{txt}{space 11}bothbioparents {c |}{col 27}{res}{space 2} .8806324{col 39}{space 2} 1.678348{col 50}{space 1}    0.52{col 59}{space 3}0.603{col 67}{space 4}-2.511435{col 80}{space 3}   4.2727
+{txt}{space 20}white {c |}{col 27}{res}{space 2} .8859291{col 39}{space 2} 2.321893{col 50}{space 1}    0.38{col 59}{space 3}0.705{col 67}{space 4}-3.806792{col 80}{space 3}  5.57865
+{txt}{space 11}avginc9799thou {c |}{col 27}{res}{space 2} .1640322{col 39}{space 2}  .059137{col 50}{space 1}    2.77{col 59}{space 3}0.008{col 67}{space 4} .0445118{col 80}{space 3} .2835526
+{txt}averageincomepovratio9799 {c |}{col 27}{res}{space 2}-1.413355{col 39}{space 2} .8869725{col 50}{space 1}   -1.59{col 59}{space 3}0.119{col 67}{space 4}-3.205993{col 80}{space 3} .3792837
+{txt}{space 22}exp {c |}{col 27}{res}{space 2} 4.054855{col 39}{space 2} 1.068511{col 50}{space 1}    3.79{col 59}{space 3}0.000{col 67}{space 4} 1.895314{col 80}{space 3} 6.214397
+{txt}{space 25} {c |}
+{space 17}hscohort {c |}
+{space 20}1995  {c |}{col 27}{res}{space 2} .7611415{col 39}{space 2} 2.369549{col 50}{space 1}    0.32{col 59}{space 3}0.750{col 67}{space 4}-4.027895{col 80}{space 3} 5.550178
+{txt}{space 20}1996  {c |}{col 27}{res}{space 2}-3.630984{col 39}{space 2} 1.902278{col 50}{space 1}   -1.91{col 59}{space 3}0.063{col 67}{space 4}-7.475631{col 80}{space 3} .2136625
+{txt}{space 20}1997  {c |}{col 27}{res}{space 2}-2.950056{col 39}{space 2} 2.547859{col 50}{space 1}   -1.16{col 59}{space 3}0.254{col 67}{space 4} -8.09947{col 80}{space 3} 2.199359
+{txt}{space 20}1998  {c |}{col 27}{res}{space 2}-6.138228{col 39}{space 2} 2.755654{col 50}{space 1}   -2.23{col 59}{space 3}0.032{col 67}{space 4}-11.70761{col 80}{space 3}-.5688435
+{txt}{space 25} {c |}
+{space 10}highschoolstate {c |}
+{space 23}2  {c |}{col 27}{res}{space 2} 20.39867{col 39}{space 2}  1.91109{col 50}{space 1}   10.67{col 59}{space 3}0.000{col 67}{space 4} 16.53621{col 80}{space 3} 24.26112
+{txt}{space 23}3  {c |}{col 27}{res}{space 2} 7.104892{col 39}{space 2} 1.887798{col 50}{space 1}    3.76{col 59}{space 3}0.001{col 67}{space 4}  3.28951{col 80}{space 3} 10.92027
+{txt}{space 23}4  {c |}{col 27}{res}{space 2}-30.60322{col 39}{space 2} 4.860421{col 50}{space 1}   -6.30{col 59}{space 3}0.000{col 67}{space 4} -40.4265{col 80}{space 3}-20.77995
+{txt}{space 23}5  {c |}{col 27}{res}{space 2}-4.646217{col 39}{space 2}  5.29156{col 50}{space 1}   -0.88{col 59}{space 3}0.385{col 67}{space 4}-15.34086{col 80}{space 3} 6.048424
+{txt}{space 23}6  {c |}{col 27}{res}{space 2} 2.513962{col 39}{space 2}  1.82856{col 50}{space 1}    1.37{col 59}{space 3}0.177{col 67}{space 4}-1.181695{col 80}{space 3}  6.20962
+{txt}{space 23}7  {c |}{col 27}{res}{space 2}-4.548049{col 39}{space 2}  5.48628{col 50}{space 1}   -0.83{col 59}{space 3}0.412{col 67}{space 4}-15.63623{col 80}{space 3} 6.540135
+{txt}{space 23}8  {c |}{col 27}{res}{space 2}-11.30605{col 39}{space 2} 5.664883{col 50}{space 1}   -2.00{col 59}{space 3}0.053{col 67}{space 4}-22.75521{col 80}{space 3} .1431034
+{txt}{space 23}9  {c |}{col 27}{res}{space 2}-11.89933{col 39}{space 2} 2.991549{col 50}{space 1}   -3.98{col 59}{space 3}0.000{col 67}{space 4}-17.94547{col 80}{space 3} -5.85318
+{txt}{space 22}10  {c |}{col 27}{res}{space 2}-9.079515{col 39}{space 2} 5.506878{col 50}{space 1}   -1.65{col 59}{space 3}0.107{col 67}{space 4}-20.20933{col 80}{space 3} 2.050301
+{txt}{space 22}11  {c |}{col 27}{res}{space 2}-11.09725{col 39}{space 2} 4.805188{col 50}{space 1}   -2.31{col 59}{space 3}0.026{col 67}{space 4} -20.8089{col 80}{space 3}-1.385605
+{txt}{space 22}14  {c |}{col 27}{res}{space 2} -9.53244{col 39}{space 2} 5.421268{col 50}{space 1}   -1.76{col 59}{space 3}0.086{col 67}{space 4}-20.48923{col 80}{space 3} 1.424351
+{txt}{space 22}15  {c |}{col 27}{res}{space 2}-9.613127{col 39}{space 2} 5.710156{col 50}{space 1}   -1.68{col 59}{space 3}0.100{col 67}{space 4}-21.15378{col 80}{space 3} 1.927529
+{txt}{space 22}17  {c |}{col 27}{res}{space 2} 19.71352{col 39}{space 2} 1.543017{col 50}{space 1}   12.78{col 59}{space 3}0.000{col 67}{space 4} 16.59497{col 80}{space 3} 22.83208
+{txt}{space 22}18  {c |}{col 27}{res}{space 2}-34.22172{col 39}{space 2} 6.858425{col 50}{space 1}   -4.99{col 59}{space 3}0.000{col 67}{space 4}-48.08312{col 80}{space 3}-20.36033
+{txt}{space 22}19  {c |}{col 27}{res}{space 2} 10.67073{col 39}{space 2} 3.243927{col 50}{space 1}    3.29{col 59}{space 3}0.002{col 67}{space 4} 4.114505{col 80}{space 3} 17.22695
+{txt}{space 22}21  {c |}{col 27}{res}{space 2}-6.262414{col 39}{space 2} 5.401124{col 50}{space 1}   -1.16{col 59}{space 3}0.253{col 67}{space 4}-17.17849{col 80}{space 3} 4.653665
+{txt}{space 22}22  {c |}{col 27}{res}{space 2}  1.78816{col 39}{space 2} 2.639087{col 50}{space 1}    0.68{col 59}{space 3}0.502{col 67}{space 4}-3.545633{col 80}{space 3} 7.121952
+{txt}{space 22}23  {c |}{col 27}{res}{space 2} 16.95802{col 39}{space 2} 1.872175{col 50}{space 1}    9.06{col 59}{space 3}0.000{col 67}{space 4} 13.17421{col 80}{space 3} 20.74182
+{txt}{space 22}24  {c |}{col 27}{res}{space 2}-4.980053{col 39}{space 2} 2.181892{col 50}{space 1}   -2.28{col 59}{space 3}0.028{col 67}{space 4}-9.389822{col 80}{space 3}-.5702843
+{txt}{space 22}25  {c |}{col 27}{res}{space 2}-50.04525{col 39}{space 2} 7.006589{col 50}{space 1}   -7.14{col 59}{space 3}0.000{col 67}{space 4}-64.20609{col 80}{space 3} -35.8844
+{txt}{space 22}26  {c |}{col 27}{res}{space 2} 4.672774{col 39}{space 2} 1.626952{col 50}{space 1}    2.87{col 59}{space 3}0.006{col 67}{space 4} 1.384581{col 80}{space 3} 7.960966
+{txt}{space 22}27  {c |}{col 27}{res}{space 2} 14.38894{col 39}{space 2} 2.309496{col 50}{space 1}    6.23{col 59}{space 3}0.000{col 67}{space 4} 9.721275{col 80}{space 3} 19.05661
+{txt}{space 22}31  {c |}{col 27}{res}{space 2} 17.09302{col 39}{space 2} 1.583102{col 50}{space 1}   10.80{col 59}{space 3}0.000{col 67}{space 4} 13.89345{col 80}{space 3} 20.29259
+{txt}{space 22}32  {c |}{col 27}{res}{space 2}  24.5026{col 39}{space 2}  5.94215{col 50}{space 1}    4.12{col 59}{space 3}0.000{col 67}{space 4} 12.49306{col 80}{space 3} 36.51213
+{txt}{space 22}33  {c |}{col 27}{res}{space 2} 11.15691{col 39}{space 2} 1.849655{col 50}{space 1}    6.03{col 59}{space 3}0.000{col 67}{space 4} 7.418613{col 80}{space 3}  14.8952
+{txt}{space 22}34  {c |}{col 27}{res}{space 2} 2.718779{col 39}{space 2} 1.528596{col 50}{space 1}    1.78{col 59}{space 3}0.083{col 67}{space 4}-.3706285{col 80}{space 3} 5.808187
+{txt}{space 22}35  {c |}{col 27}{res}{space 2} 10.38043{col 39}{space 2} 2.420002{col 50}{space 1}    4.29{col 59}{space 3}0.000{col 67}{space 4} 5.489419{col 80}{space 3} 15.27143
+{txt}{space 22}36  {c |}{col 27}{res}{space 2} 22.45141{col 39}{space 2} 1.953478{col 50}{space 1}   11.49{col 59}{space 3}0.000{col 67}{space 4} 18.50328{col 80}{space 3} 26.39954
+{txt}{space 22}37  {c |}{col 27}{res}{space 2}-25.05163{col 39}{space 2} 5.504188{col 50}{space 1}   -4.55{col 59}{space 3}0.000{col 67}{space 4}-36.17601{col 80}{space 3}-13.92726
+{txt}{space 22}38  {c |}{col 27}{res}{space 2} 12.30025{col 39}{space 2} 2.628099{col 50}{space 1}    4.68{col 59}{space 3}0.000{col 67}{space 4} 6.988663{col 80}{space 3} 17.61183
+{txt}{space 22}39  {c |}{col 27}{res}{space 2} -7.98503{col 39}{space 2}  5.40745{col 50}{space 1}   -1.48{col 59}{space 3}0.148{col 67}{space 4} -18.9139{col 80}{space 3} 2.943834
+{txt}{space 22}40  {c |}{col 27}{res}{space 2}-22.17174{col 39}{space 2} 4.018011{col 50}{space 1}   -5.52{col 59}{space 3}0.000{col 67}{space 4}-30.29245{col 80}{space 3}-14.05104
+{txt}{space 22}41  {c |}{col 27}{res}{space 2}-16.91383{col 39}{space 2} 5.409998{col 50}{space 1}   -3.13{col 59}{space 3}0.003{col 67}{space 4}-27.84784{col 80}{space 3}-5.979819
+{txt}{space 22}42  {c |}{col 27}{res}{space 2} 22.44355{col 39}{space 2} 2.466435{col 50}{space 1}    9.10{col 59}{space 3}0.000{col 67}{space 4} 17.45869{col 80}{space 3}  27.4284
+{txt}{space 22}43  {c |}{col 27}{res}{space 2}-2.808689{col 39}{space 2} 4.799899{col 50}{space 1}   -0.59{col 59}{space 3}0.562{col 67}{space 4}-12.50965{col 80}{space 3} 6.892269
+{txt}{space 22}44  {c |}{col 27}{res}{space 2} 10.64591{col 39}{space 2} 1.514554{col 50}{space 1}    7.03{col 59}{space 3}0.000{col 67}{space 4} 7.584883{col 80}{space 3} 13.70694
+{txt}{space 22}46  {c |}{col 27}{res}{space 2} 6.099467{col 39}{space 2} 1.887582{col 50}{space 1}    3.23{col 59}{space 3}0.002{col 67}{space 4} 2.284522{col 80}{space 3} 9.914413
+{txt}{space 22}47  {c |}{col 27}{res}{space 2} 9.038267{col 39}{space 2} 1.576233{col 50}{space 1}    5.73{col 59}{space 3}0.000{col 67}{space 4} 5.852582{col 80}{space 3} 12.22395
+{txt}{space 22}48  {c |}{col 27}{res}{space 2}-8.136462{col 39}{space 2} 5.905309{col 50}{space 1}   -1.38{col 59}{space 3}0.176{col 67}{space 4}-20.07154{col 80}{space 3} 3.798612
+{txt}{space 22}50  {c |}{col 27}{res}{space 2}-11.96489{col 39}{space 2} 3.084154{col 50}{space 1}   -3.88{col 59}{space 3}0.000{col 67}{space 4} -18.1982{col 80}{space 3} -5.73158
+{txt}{space 25} {c |}
+{space 20}_cons {c |}{col 27}{res}{space 2} 17.04701{col 39}{space 2} 4.894862{col 50}{space 1}    3.48{col 59}{space 3}0.001{col 67}{space 4} 7.154125{col 80}{space 3} 26.93989
+{txt}{hline 26}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. estadd local fe Yes
+
+{txt}added macro:
+                 e(fe) : "{res:Yes}"
+
+{com}. 
+. *Store results from regression 
+. est sto m1
+{txt}
+{com}. 
+. *Run OLS with with lasso selected controls 
+. regress incomerank satmathscore advmathcreditsearned hsdiploma belowbachelors bachelorsabove female bothbioparents white avginc9799thou averageincomepovratio9799 rec2 i.hscohort i.highschoolstate, robust cluster (highschoolstate)
+
+{txt}Linear regression                               Number of obs     = {res}     1,143
+                                                {txt}{help j_robustsingular:F(14, 40) }        =  {res}        .
+                                                {txt}Prob > F          = {res}         .
+                                                {txt}R-squared         = {res}    0.2784
+                                                {txt}Root MSE          =    {res} 25.109
+
+{txt}{ralign 91:(Std. Err. adjusted for {res:41} clusters in highschoolstate)}
+{hline 26}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 27}{c |}{col 39}    Robust
+{col 1}               incomerank{col 27}{c |}      Coef.{col 39}   Std. Err.{col 51}      t{col 59}   P>|t|{col 67}     [95% Con{col 80}f. Interval]
+{hline 26}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 13}satmathscore {c |}{col 27}{res}{space 2} .6755579{col 39}{space 2} .7291914{col 50}{space 1}    0.93{col 59}{space 3}0.360{col 67}{space 4}-.7981929{col 80}{space 3} 2.149309
+{txt}{space 5}advmathcreditsearned {c |}{col 27}{res}{space 2} 3.156693{col 39}{space 2} 1.082696{col 50}{space 1}    2.92{col 59}{space 3}0.006{col 67}{space 4} .9684827{col 80}{space 3} 5.344904
+{txt}{space 16}hsdiploma {c |}{col 27}{res}{space 2} 6.513306{col 39}{space 2} 6.334714{col 50}{space 1}    1.03{col 59}{space 3}0.310{col 67}{space 4}-6.289628{col 80}{space 3} 19.31624
+{txt}{space 11}belowbachelors {c |}{col 27}{res}{space 2} 5.071098{col 39}{space 2}  6.52295{col 50}{space 1}    0.78{col 59}{space 3}0.441{col 67}{space 4}-8.112276{col 80}{space 3} 18.25447
+{txt}{space 11}bachelorsabove {c |}{col 27}{res}{space 2} 22.31022{col 39}{space 2} 6.232464{col 50}{space 1}    3.58{col 59}{space 3}0.001{col 67}{space 4} 9.713935{col 80}{space 3}  34.9065
+{txt}{space 19}female {c |}{col 27}{res}{space 2} -13.6974{col 39}{space 2} 1.074954{col 50}{space 1}  -12.74{col 59}{space 3}0.000{col 67}{space 4}-15.86996{col 80}{space 3}-11.52483
+{txt}{space 11}bothbioparents {c |}{col 27}{res}{space 2} .8417757{col 39}{space 2} 1.681195{col 50}{space 1}    0.50{col 59}{space 3}0.619{col 67}{space 4}-2.556046{col 80}{space 3} 4.239597
+{txt}{space 20}white {c |}{col 27}{res}{space 2} .9053289{col 39}{space 2} 2.288271{col 50}{space 1}    0.40{col 59}{space 3}0.694{col 67}{space 4} -3.71944{col 80}{space 3} 5.530098
+{txt}{space 11}avginc9799thou {c |}{col 27}{res}{space 2}  .162174{col 39}{space 2} .0597623{col 50}{space 1}    2.71{col 59}{space 3}0.010{col 67}{space 4}   .04139{col 80}{space 3}  .282958
+{txt}averageincomepovratio9799 {c |}{col 27}{res}{space 2}-1.365101{col 39}{space 2} .8984199{col 50}{space 1}   -1.52{col 59}{space 3}0.137{col 67}{space 4}-3.180875{col 80}{space 3} .4506736
+{txt}{space 21}rec2 {c |}{col 27}{res}{space 2} .3014611{col 39}{space 2} .0620754{col 50}{space 1}    4.86{col 59}{space 3}0.000{col 67}{space 4}  .176002{col 80}{space 3} .4269202
+{txt}{space 25} {c |}
+{space 17}hscohort {c |}
+{space 20}1995  {c |}{col 27}{res}{space 2} .8890371{col 39}{space 2} 2.361408{col 50}{space 1}    0.38{col 59}{space 3}0.709{col 67}{space 4}-3.883546{col 80}{space 3} 5.661621
+{txt}{space 20}1996  {c |}{col 27}{res}{space 2}-3.428126{col 39}{space 2} 1.929199{col 50}{space 1}   -1.78{col 59}{space 3}0.083{col 67}{space 4}-7.327183{col 80}{space 3}  .470931
+{txt}{space 20}1997  {c |}{col 27}{res}{space 2}-1.729692{col 39}{space 2} 2.397503{col 50}{space 1}   -0.72{col 59}{space 3}0.475{col 67}{space 4}-6.575226{col 80}{space 3} 3.115842
+{txt}{space 20}1998  {c |}{col 27}{res}{space 2}-3.478486{col 39}{space 2} 2.248664{col 50}{space 1}   -1.55{col 59}{space 3}0.130{col 67}{space 4}-8.023206{col 80}{space 3} 1.066234
+{txt}{space 25} {c |}
+{space 10}highschoolstate {c |}
+{space 23}2  {c |}{col 27}{res}{space 2} 18.42764{col 39}{space 2} 1.889582{col 50}{space 1}    9.75{col 59}{space 3}0.000{col 67}{space 4} 14.60865{col 80}{space 3} 22.24663
+{txt}{space 23}3  {c |}{col 27}{res}{space 2} 5.228101{col 39}{space 2} 1.985401{col 50}{space 1}    2.63{col 59}{space 3}0.012{col 67}{space 4} 1.215456{col 80}{space 3} 9.240746
+{txt}{space 23}4  {c |}{col 27}{res}{space 2}-13.18899{col 39}{space 2}  2.26796{col 50}{space 1}   -5.82{col 59}{space 3}0.000{col 67}{space 4}-17.77271{col 80}{space 3}-8.605278
+{txt}{space 23}5  {c |}{col 27}{res}{space 2} 6.449802{col 39}{space 2}  2.24386{col 50}{space 1}    2.87{col 59}{space 3}0.006{col 67}{space 4} 1.914791{col 80}{space 3} 10.98481
+{txt}{space 23}6  {c |}{col 27}{res}{space 2} 2.416525{col 39}{space 2}  1.82404{col 50}{space 1}    1.32{col 59}{space 3}0.193{col 67}{space 4}-1.269998{col 80}{space 3} 6.103047
+{txt}{space 23}7  {c |}{col 27}{res}{space 2}  13.5538{col 39}{space 2} 1.752199{col 50}{space 1}    7.74{col 59}{space 3}0.000{col 67}{space 4} 10.01248{col 80}{space 3} 17.09513
+{txt}{space 23}8  {c |}{col 27}{res}{space 2}  7.22254{col 39}{space 2} 1.963925{col 50}{space 1}    3.68{col 59}{space 3}0.001{col 67}{space 4} 3.253299{col 80}{space 3} 11.19178
+{txt}{space 23}9  {c |}{col 27}{res}{space 2}-14.40384{col 39}{space 2}  3.07537{col 50}{space 1}   -4.68{col 59}{space 3}0.000{col 67}{space 4}-20.61939{col 80}{space 3}-8.188282
+{txt}{space 22}10  {c |}{col 27}{res}{space 2} 5.453512{col 39}{space 2} 1.771877{col 50}{space 1}    3.08{col 59}{space 3}0.004{col 67}{space 4} 1.872415{col 80}{space 3} 9.034609
+{txt}{space 22}11  {c |}{col 27}{res}{space 2} 2.704887{col 39}{space 2} 1.264648{col 50}{space 1}    2.14{col 59}{space 3}0.039{col 67}{space 4} .1489389{col 80}{space 3} 5.260835
+{txt}{space 22}14  {c |}{col 27}{res}{space 2} 7.273751{col 39}{space 2} 1.724842{col 50}{space 1}    4.22{col 59}{space 3}0.000{col 67}{space 4} 3.787715{col 80}{space 3} 10.75979
+{txt}{space 22}15  {c |}{col 27}{res}{space 2} 8.601956{col 39}{space 2} 1.838115{col 50}{space 1}    4.68{col 59}{space 3}0.000{col 67}{space 4} 4.886987{col 80}{space 3} 12.31693
+{txt}{space 22}17  {c |}{col 27}{res}{space 2} 17.63687{col 39}{space 2} 1.551195{col 50}{space 1}   11.37{col 59}{space 3}0.000{col 67}{space 4} 14.50179{col 80}{space 3} 20.77196
+{txt}{space 22}18  {c |}{col 27}{res}{space 2}-16.54173{col 39}{space 2}  3.63932{col 50}{space 1}   -4.55{col 59}{space 3}0.000{col 67}{space 4}-23.89707{col 80}{space 3}-9.186391
+{txt}{space 22}19  {c |}{col 27}{res}{space 2} 7.841016{col 39}{space 2} 3.061712{col 50}{space 1}    2.56{col 59}{space 3}0.014{col 67}{space 4} 1.653066{col 80}{space 3} 14.02897
+{txt}{space 22}21  {c |}{col 27}{res}{space 2}  11.8048{col 39}{space 2} 1.926757{col 50}{space 1}    6.13{col 59}{space 3}0.000{col 67}{space 4} 7.910677{col 80}{space 3} 15.69892
+{txt}{space 22}22  {c |}{col 27}{res}{space 2} 7.069159{col 39}{space 2} 1.928086{col 50}{space 1}    3.67{col 59}{space 3}0.001{col 67}{space 4} 3.172352{col 80}{space 3} 10.96597
+{txt}{space 22}23  {c |}{col 27}{res}{space 2} 14.98185{col 39}{space 2} 1.894083{col 50}{space 1}    7.91{col 59}{space 3}0.000{col 67}{space 4} 11.15377{col 80}{space 3} 18.80994
+{txt}{space 22}24  {c |}{col 27}{res}{space 2}-7.000249{col 39}{space 2} 2.177004{col 50}{space 1}   -3.22{col 59}{space 3}0.003{col 67}{space 4}-11.40014{col 80}{space 3} -2.60036
+{txt}{space 22}25  {c |}{col 27}{res}{space 2}-34.45268{col 39}{space 2} 3.543124{col 50}{space 1}   -9.72{col 59}{space 3}0.000{col 67}{space 4} -41.6136{col 80}{space 3}-27.29176
+{txt}{space 22}26  {c |}{col 27}{res}{space 2} 2.829737{col 39}{space 2} 1.640822{col 50}{space 1}    1.72{col 59}{space 3}0.092{col 67}{space 4}-.4864878{col 80}{space 3} 6.145962
+{txt}{space 22}27  {c |}{col 27}{res}{space 2} 11.02781{col 39}{space 2} 2.174453{col 50}{space 1}    5.07{col 59}{space 3}0.000{col 67}{space 4} 6.633073{col 80}{space 3} 15.42254
+{txt}{space 22}31  {c |}{col 27}{res}{space 2} 15.01784{col 39}{space 2} 1.595629{col 50}{space 1}    9.41{col 59}{space 3}0.000{col 67}{space 4} 11.79296{col 80}{space 3} 18.24273
+{txt}{space 22}32  {c |}{col 27}{res}{space 2} 43.36986{col 39}{space 2} 2.109928{col 50}{space 1}   20.56{col 59}{space 3}0.000{col 67}{space 4} 39.10554{col 80}{space 3} 47.63419
+{txt}{space 22}33  {c |}{col 27}{res}{space 2}  9.63174{col 39}{space 2} 1.833414{col 50}{space 1}    5.25{col 59}{space 3}0.000{col 67}{space 4} 5.926273{col 80}{space 3} 13.33721
+{txt}{space 22}34  {c |}{col 27}{res}{space 2} 3.123267{col 39}{space 2} 1.516801{col 50}{space 1}    2.06{col 59}{space 3}0.046{col 67}{space 4} .0576974{col 80}{space 3} 6.188837
+{txt}{space 22}35  {c |}{col 27}{res}{space 2} 8.885618{col 39}{space 2} 2.457315{col 50}{space 1}    3.62{col 59}{space 3}0.001{col 67}{space 4}   3.9192{col 80}{space 3} 13.85204
+{txt}{space 22}36  {c |}{col 27}{res}{space 2} 20.86784{col 39}{space 2} 2.038419{col 50}{space 1}   10.24{col 59}{space 3}0.000{col 67}{space 4} 16.74804{col 80}{space 3} 24.98764
+{txt}{space 22}37  {c |}{col 27}{res}{space 2} -6.71983{col 39}{space 2} 1.556803{col 50}{space 1}   -4.32{col 59}{space 3}0.000{col 67}{space 4}-9.866247{col 80}{space 3}-3.573414
+{txt}{space 22}38  {c |}{col 27}{res}{space 2} 10.30417{col 39}{space 2} 2.648699{col 50}{space 1}    3.89{col 59}{space 3}0.000{col 67}{space 4} 4.950947{col 80}{space 3} 15.65739
+{txt}{space 22}39  {c |}{col 27}{res}{space 2} 8.774293{col 39}{space 2} 1.753018{col 50}{space 1}    5.01{col 59}{space 3}0.000{col 67}{space 4} 5.231312{col 80}{space 3} 12.31727
+{txt}{space 22}40  {c |}{col 27}{res}{space 2}-23.38295{col 39}{space 2} 3.944122{col 50}{space 1}   -5.93{col 59}{space 3}0.000{col 67}{space 4}-31.35432{col 80}{space 3}-15.41158
+{txt}{space 22}41  {c |}{col 27}{res}{space 2}-.2463359{col 39}{space 2} 1.854095{col 50}{space 1}   -0.13{col 59}{space 3}0.895{col 67}{space 4}-3.993602{col 80}{space 3}  3.50093
+{txt}{space 22}42  {c |}{col 27}{res}{space 2} 20.98566{col 39}{space 2} 2.599417{col 50}{space 1}    8.07{col 59}{space 3}0.000{col 67}{space 4} 15.73204{col 80}{space 3} 26.23928
+{txt}{space 22}43  {c |}{col 27}{res}{space 2} 13.24875{col 39}{space 2} 1.770816{col 50}{space 1}    7.48{col 59}{space 3}0.000{col 67}{space 4} 9.669792{col 80}{space 3}  16.8277
+{txt}{space 22}44  {c |}{col 27}{res}{space 2} 10.68823{col 39}{space 2} 1.503453{col 50}{space 1}    7.11{col 59}{space 3}0.000{col 67}{space 4} 7.649641{col 80}{space 3} 13.72683
+{txt}{space 22}46  {c |}{col 27}{res}{space 2} 4.184514{col 39}{space 2} 1.959311{col 50}{space 1}    2.14{col 59}{space 3}0.039{col 67}{space 4} .2245984{col 80}{space 3} 8.144429
+{txt}{space 22}47  {c |}{col 27}{res}{space 2} 7.736349{col 39}{space 2} 1.595938{col 50}{space 1}    4.85{col 59}{space 3}0.000{col 67}{space 4} 4.510838{col 80}{space 3} 10.96186
+{txt}{space 22}48  {c |}{col 27}{res}{space 2} 10.22012{col 39}{space 2} 1.990035{col 50}{space 1}    5.14{col 59}{space 3}0.000{col 67}{space 4} 6.198112{col 80}{space 3} 14.24213
+{txt}{space 22}50  {c |}{col 27}{res}{space 2}-7.182973{col 39}{space 2} 2.419176{col 50}{space 1}   -2.97{col 59}{space 3}0.005{col 67}{space 4}-12.07231{col 80}{space 3}-2.293636
+{txt}{space 25} {c |}
+{space 20}_cons {c |}{col 27}{res}{space 2} 18.63241{col 39}{space 2} 4.828486{col 50}{space 1}    3.86{col 59}{space 3}0.000{col 67}{space 4} 8.873675{col 80}{space 3} 28.39114
+{txt}{hline 26}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. estadd local fe Yes
+
+{txt}added macro:
+                 e(fe) : "{res:Yes}"
+
+{com}. 
+. *Store results from regression
+. est sto m2
+{txt}
+{com}. 
+. 
+. *Run OLS with lasso selected controls
+. regress incomerank satmathscore advmathcreditsearned hsdiploma belowbachelors bachelorsabove female bothbioparents white avginc9799thou averageincomepovratio9799 expend2 i.hscohort i.highschoolstate, robust cluster (highschoolstate)
+
+{txt}Linear regression                               Number of obs     = {res}     1,143
+                                                {txt}{help j_robustsingular:F(14, 40) }        =  {res}        .
+                                                {txt}Prob > F          = {res}         .
+                                                {txt}R-squared         = {res}    0.2782
+                                                {txt}Root MSE          =    {res} 25.112
+
+{txt}{ralign 91:(Std. Err. adjusted for {res:41} clusters in highschoolstate)}
+{hline 26}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 27}{c |}{col 39}    Robust
+{col 1}               incomerank{col 27}{c |}      Coef.{col 39}   Std. Err.{col 51}      t{col 59}   P>|t|{col 67}     [95% Con{col 80}f. Interval]
+{hline 26}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 13}satmathscore {c |}{col 27}{res}{space 2} .6769676{col 39}{space 2} .7290268{col 50}{space 1}    0.93{col 59}{space 3}0.359{col 67}{space 4}-.7964506{col 80}{space 3} 2.150386
+{txt}{space 5}advmathcreditsearned {c |}{col 27}{res}{space 2} 3.155211{col 39}{space 2}  1.08366{col 50}{space 1}    2.91{col 59}{space 3}0.006{col 67}{space 4} .9650535{col 80}{space 3} 5.345369
+{txt}{space 16}hsdiploma {c |}{col 27}{res}{space 2} 6.541113{col 39}{space 2} 6.332895{col 50}{space 1}    1.03{col 59}{space 3}0.308{col 67}{space 4}-6.258146{col 80}{space 3} 19.34037
+{txt}{space 11}belowbachelors {c |}{col 27}{res}{space 2} 5.084895{col 39}{space 2} 6.521486{col 50}{space 1}    0.78{col 59}{space 3}0.440{col 67}{space 4}-8.095519{col 80}{space 3} 18.26531
+{txt}{space 11}bachelorsabove {c |}{col 27}{res}{space 2} 22.32823{col 39}{space 2} 6.231358{col 50}{space 1}    3.58{col 59}{space 3}0.001{col 67}{space 4} 9.734182{col 80}{space 3} 34.92227
+{txt}{space 19}female {c |}{col 27}{res}{space 2}-13.69117{col 39}{space 2} 1.072642{col 50}{space 1}  -12.76{col 59}{space 3}0.000{col 67}{space 4}-15.85906{col 80}{space 3}-11.52328
+{txt}{space 11}bothbioparents {c |}{col 27}{res}{space 2}  .847864{col 39}{space 2} 1.679183{col 50}{space 1}    0.50{col 59}{space 3}0.616{col 67}{space 4}-2.545892{col 80}{space 3}  4.24162
+{txt}{space 20}white {c |}{col 27}{res}{space 2} .9198109{col 39}{space 2} 2.290785{col 50}{space 1}    0.40{col 59}{space 3}0.690{col 67}{space 4}-3.710039{col 80}{space 3} 5.549661
+{txt}{space 11}avginc9799thou {c |}{col 27}{res}{space 2} .1620104{col 39}{space 2} .0597322{col 50}{space 1}    2.71{col 59}{space 3}0.010{col 67}{space 4} .0412871{col 80}{space 3} .2827338
+{txt}averageincomepovratio9799 {c |}{col 27}{res}{space 2}-1.364086{col 39}{space 2} .8978341{col 50}{space 1}   -1.52{col 59}{space 3}0.137{col 67}{space 4}-3.178677{col 80}{space 3}  .450504
+{txt}{space 18}expend2 {c |}{col 27}{res}{space 2} .0796823{col 39}{space 2} .0167199{col 50}{space 1}    4.77{col 59}{space 3}0.000{col 67}{space 4} .0458901{col 80}{space 3} .1134744
+{txt}{space 25} {c |}
+{space 17}hscohort {c |}
+{space 20}1995  {c |}{col 27}{res}{space 2} .8960641{col 39}{space 2} 2.363104{col 50}{space 1}    0.38{col 59}{space 3}0.707{col 67}{space 4}-3.879947{col 80}{space 3} 5.672075
+{txt}{space 20}1996  {c |}{col 27}{res}{space 2}-3.434755{col 39}{space 2} 1.933904{col 50}{space 1}   -1.78{col 59}{space 3}0.083{col 67}{space 4}-7.343321{col 80}{space 3} .4738102
+{txt}{space 20}1997  {c |}{col 27}{res}{space 2}  -1.7081{col 39}{space 2} 2.399636{col 50}{space 1}   -0.71{col 59}{space 3}0.481{col 67}{space 4}-6.557945{col 80}{space 3} 3.141745
+{txt}{space 20}1998  {c |}{col 27}{res}{space 2}-3.460711{col 39}{space 2} 2.267738{col 50}{space 1}   -1.53{col 59}{space 3}0.135{col 67}{space 4} -8.04398{col 80}{space 3} 1.122558
+{txt}{space 25} {c |}
+{space 10}highschoolstate {c |}
+{space 23}2  {c |}{col 27}{res}{space 2} 18.42254{col 39}{space 2} 1.889321{col 50}{space 1}    9.75{col 59}{space 3}0.000{col 67}{space 4} 14.60408{col 80}{space 3}   22.241
+{txt}{space 23}3  {c |}{col 27}{res}{space 2} 5.221769{col 39}{space 2} 1.985894{col 50}{space 1}    2.63{col 59}{space 3}0.012{col 67}{space 4} 1.208129{col 80}{space 3}  9.23541
+{txt}{space 23}4  {c |}{col 27}{res}{space 2}-13.23239{col 39}{space 2}  2.26907{col 50}{space 1}   -5.83{col 59}{space 3}0.000{col 67}{space 4}-17.81835{col 80}{space 3}-8.646432
+{txt}{space 23}5  {c |}{col 27}{res}{space 2} 7.052331{col 39}{space 2} 2.140602{col 50}{space 1}    3.29{col 59}{space 3}0.002{col 67}{space 4} 2.726012{col 80}{space 3} 11.37865
+{txt}{space 23}6  {c |}{col 27}{res}{space 2} 2.428247{col 39}{space 2} 1.823216{col 50}{space 1}    1.33{col 59}{space 3}0.190{col 67}{space 4} -1.25661{col 80}{space 3} 6.113103
+{txt}{space 23}7  {c |}{col 27}{res}{space 2} 13.54153{col 39}{space 2}  1.75456{col 50}{space 1}    7.72{col 59}{space 3}0.000{col 67}{space 4} 9.995431{col 80}{space 3} 17.08763
+{txt}{space 23}8  {c |}{col 27}{res}{space 2} 7.139487{col 39}{space 2} 1.964741{col 50}{space 1}    3.63{col 59}{space 3}0.001{col 67}{space 4} 3.168598{col 80}{space 3} 11.11038
+{txt}{space 23}9  {c |}{col 27}{res}{space 2}-14.42165{col 39}{space 2} 3.080944{col 50}{space 1}   -4.68{col 59}{space 3}0.000{col 67}{space 4}-20.64847{col 80}{space 3}-8.194829
+{txt}{space 22}10  {c |}{col 27}{res}{space 2} 8.228367{col 39}{space 2} 1.532223{col 50}{space 1}    5.37{col 59}{space 3}0.000{col 67}{space 4}  5.13163{col 80}{space 3} 11.32511
+{txt}{space 22}11  {c |}{col 27}{res}{space 2}  3.59918{col 39}{space 2} 1.160938{col 50}{space 1}    3.10{col 59}{space 3}0.004{col 67}{space 4} 1.252837{col 80}{space 3} 5.945523
+{txt}{space 22}14  {c |}{col 27}{res}{space 2} 5.704367{col 39}{space 2} 1.910455{col 50}{space 1}    2.99{col 59}{space 3}0.005{col 67}{space 4} 1.843192{col 80}{space 3} 9.565541
+{txt}{space 22}15  {c |}{col 27}{res}{space 2} 8.789379{col 39}{space 2} 1.827571{col 50}{space 1}    4.81{col 59}{space 3}0.000{col 67}{space 4} 5.095721{col 80}{space 3} 12.48304
+{txt}{space 22}17  {c |}{col 27}{res}{space 2} 17.63623{col 39}{space 2} 1.551142{col 50}{space 1}   11.37{col 59}{space 3}0.000{col 67}{space 4} 14.50125{col 80}{space 3}  20.7712
+{txt}{space 22}18  {c |}{col 27}{res}{space 2} -16.7096{col 39}{space 2} 3.646401{col 50}{space 1}   -4.58{col 59}{space 3}0.000{col 67}{space 4}-24.07926{col 80}{space 3}-9.339951
+{txt}{space 22}19  {c |}{col 27}{res}{space 2} 7.849024{col 39}{space 2} 3.072073{col 50}{space 1}    2.55{col 59}{space 3}0.015{col 67}{space 4} 1.640133{col 80}{space 3} 14.05791
+{txt}{space 22}21  {c |}{col 27}{res}{space 2} 11.69646{col 39}{space 2} 1.933906{col 50}{space 1}    6.05{col 59}{space 3}0.000{col 67}{space 4} 7.787893{col 80}{space 3} 15.60503
+{txt}{space 22}22  {c |}{col 27}{res}{space 2} 6.547695{col 39}{space 2} 1.972404{col 50}{space 1}    3.32{col 59}{space 3}0.002{col 67}{space 4} 2.561317{col 80}{space 3} 10.53407
+{txt}{space 22}23  {c |}{col 27}{res}{space 2} 14.97308{col 39}{space 2} 1.895436{col 50}{space 1}    7.90{col 59}{space 3}0.000{col 67}{space 4} 11.14226{col 80}{space 3}  18.8039
+{txt}{space 22}24  {c |}{col 27}{res}{space 2}-7.009616{col 39}{space 2} 2.179342{col 50}{space 1}   -3.22{col 59}{space 3}0.003{col 67}{space 4}-11.41423{col 80}{space 3}-2.605001
+{txt}{space 22}25  {c |}{col 27}{res}{space 2}-33.95017{col 39}{space 2} 3.454681{col 50}{space 1}   -9.83{col 59}{space 3}0.000{col 67}{space 4}-40.93235{col 80}{space 3}  -26.968
+{txt}{space 22}26  {c |}{col 27}{res}{space 2}  2.82152{col 39}{space 2} 1.640791{col 50}{space 1}    1.72{col 59}{space 3}0.093{col 67}{space 4}-.4946434{col 80}{space 3} 6.137683
+{txt}{space 22}27  {c |}{col 27}{res}{space 2} 11.00744{col 39}{space 2}  2.18896{col 50}{space 1}    5.03{col 59}{space 3}0.000{col 67}{space 4} 6.583384{col 80}{space 3} 15.43149
+{txt}{space 22}31  {c |}{col 27}{res}{space 2}  15.0139{col 39}{space 2} 1.596377{col 50}{space 1}    9.40{col 59}{space 3}0.000{col 67}{space 4}  11.7875{col 80}{space 3}  18.2403
+{txt}{space 22}32  {c |}{col 27}{res}{space 2} 43.37472{col 39}{space 2} 2.110192{col 50}{space 1}   20.55{col 59}{space 3}0.000{col 67}{space 4} 39.10986{col 80}{space 3} 47.63958
+{txt}{space 22}33  {c |}{col 27}{res}{space 2} 9.737574{col 39}{space 2} 1.810913{col 50}{space 1}    5.38{col 59}{space 3}0.000{col 67}{space 4} 6.077583{col 80}{space 3} 13.39756
+{txt}{space 22}34  {c |}{col 27}{res}{space 2}  3.28857{col 39}{space 2} 1.513272{col 50}{space 1}    2.17{col 59}{space 3}0.036{col 67}{space 4} .2301338{col 80}{space 3} 6.347006
+{txt}{space 22}35  {c |}{col 27}{res}{space 2} 8.887075{col 39}{space 2} 2.455226{col 50}{space 1}    3.62{col 59}{space 3}0.001{col 67}{space 4} 3.924878{col 80}{space 3} 13.84927
+{txt}{space 22}36  {c |}{col 27}{res}{space 2} 20.86198{col 39}{space 2} 2.040273{col 50}{space 1}   10.23{col 59}{space 3}0.000{col 67}{space 4} 16.73843{col 80}{space 3} 24.98552
+{txt}{space 22}37  {c |}{col 27}{res}{space 2}-6.631462{col 39}{space 2} 1.551304{col 50}{space 1}   -4.27{col 59}{space 3}0.000{col 67}{space 4}-9.766765{col 80}{space 3} -3.49616
+{txt}{space 22}38  {c |}{col 27}{res}{space 2} 10.29643{col 39}{space 2} 2.651451{col 50}{space 1}    3.88{col 59}{space 3}0.000{col 67}{space 4} 4.937644{col 80}{space 3} 15.65521
+{txt}{space 22}39  {c |}{col 27}{res}{space 2} 9.031597{col 39}{space 2} 1.741071{col 50}{space 1}    5.19{col 59}{space 3}0.000{col 67}{space 4} 5.512761{col 80}{space 3} 12.55043
+{txt}{space 22}40  {c |}{col 27}{res}{space 2}-23.35612{col 39}{space 2} 3.944236{col 50}{space 1}   -5.92{col 59}{space 3}0.000{col 67}{space 4}-31.32772{col 80}{space 3}-15.38453
+{txt}{space 22}41  {c |}{col 27}{res}{space 2}-.8946989{col 39}{space 2} 1.923928{col 50}{space 1}   -0.47{col 59}{space 3}0.644{col 67}{space 4}-4.783102{col 80}{space 3} 2.993704
+{txt}{space 22}42  {c |}{col 27}{res}{space 2} 20.98654{col 39}{space 2} 2.598675{col 50}{space 1}    8.08{col 59}{space 3}0.000{col 67}{space 4} 15.73443{col 80}{space 3} 26.23866
+{txt}{space 22}43  {c |}{col 27}{res}{space 2} 13.18407{col 39}{space 2} 1.772684{col 50}{space 1}    7.44{col 59}{space 3}0.000{col 67}{space 4} 9.601345{col 80}{space 3}  16.7668
+{txt}{space 22}44  {c |}{col 27}{res}{space 2} 10.67619{col 39}{space 2} 1.503869{col 50}{space 1}    7.10{col 59}{space 3}0.000{col 67}{space 4} 7.636757{col 80}{space 3} 13.71562
+{txt}{space 22}46  {c |}{col 27}{res}{space 2} 4.175124{col 39}{space 2}  1.95917{col 50}{space 1}    2.13{col 59}{space 3}0.039{col 67}{space 4} .2154939{col 80}{space 3} 8.134755
+{txt}{space 22}47  {c |}{col 27}{res}{space 2} 7.732728{col 39}{space 2} 1.596302{col 50}{space 1}    4.84{col 59}{space 3}0.000{col 67}{space 4} 4.506482{col 80}{space 3} 10.95897
+{txt}{space 22}48  {c |}{col 27}{res}{space 2} 10.18989{col 39}{space 2} 1.990599{col 50}{space 1}    5.12{col 59}{space 3}0.000{col 67}{space 4}  6.16674{col 80}{space 3} 14.21304
+{txt}{space 22}50  {c |}{col 27}{res}{space 2}-7.177066{col 39}{space 2} 2.417137{col 50}{space 1}   -2.97{col 59}{space 3}0.005{col 67}{space 4}-12.06228{col 80}{space 3} -2.29185
+{txt}{space 25} {c |}
+{space 20}_cons {c |}{col 27}{res}{space 2}  18.5986{col 39}{space 2} 4.828393{col 50}{space 1}    3.85{col 59}{space 3}0.000{col 67}{space 4} 8.840058{col 80}{space 3} 28.35715
+{txt}{hline 26}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}
+{com}. 
+. estadd local fe Yes
+
+{txt}added macro:
+                 e(fe) : "{res:Yes}"
+
+{com}. 
+. *Store results from regression 
+. est sto m3
+{txt}
+{com}. 
+. *Save results from three OLS models as table 
+. esttab m1 m2 m3 using SATMathIncRankOLS.tex, keep (satmathscore advmathcreditsearned hsdiploma belowbachelors bachelorsabove female bothbioparents white avginc9799thou averageincomepovratio9799 exp rec2 expend2) cells(b(star fmt(3)) se(fmt(3) par)) starlevels(* .1 ** .05 *** .01 **** .001) stats(fe r2 N, ///
+> labels("state and cohort FE" "R^2")) legend nolabel nonumber title("OLS Regressions Income Rank Different Exposure STEM Reform") mtitle("Model 1" "Model 2" "Model 3")
+{res}{txt}(output written to {browse  `"SATMathIncRankOLS.tex"'})
+
+{com}. 
+. ***Quantile regression analysis***
+. 
+. *Determine controls necessary for quantile regression analysis with exposure to STEM reform
+. pdslasso avginc20172019 satmathscore (exp advmathcreditsearned hsdiploma belowbachelors bachelorsabove hhsize97 female bothbioparents white avginc9799 averageincomepovratio9799 age totalmathcreditsgraduate c*), partial(c* exp hsdiploma belowbachelors bachelorsabove) cluster (highschoolstate) rlasso
+{res}{txt}Partialling out unpenalized controls...
+{res}{txt}1.  (PDS/CHS) Selecting HD controls for dep var avginc20172019...
+Warning: unable to store lasso estimation
+Selected: {res}{col 11}advmathcreditsearned female avginc9799
+{txt}2.  (PDS/CHS) Selecting HD controls for exog regressor satmathscore...
+Warning: unable to store lasso estimation
+Selected: {res}{col 11}advmathcreditsearned female white averageincomepovratio9799
+
+
+{txt}Estimation results:
+
+Specification:
+Regularization method:{col 40}{res}lasso
+{txt}Penalty loadings:{col 40}{res}cluster-lasso
+{txt}Number of observations:{col 40}{res}1,143
+{txt}Number of clusters:{col 40}{res}   41
+{txt}Exogenous (1):{res}{col 40}satmathscore
+{txt}High-dim controls (9):{res}{col 40}advmathcreditsearned hhsize97 female bothbioparents white avginc9799
+{col 40}averageincomepovratio9799 age totalmathcreditsgraduate
+{txt}Selected controls (5):{res}{col 40}advmathcreditsearned female white avginc9799 averageincomepovratio9799
+{txt}Partialled-out controls (9):{res}{col 40}c1 c2 c3 c4 c5 exp hsdiploma belowbachelors bachelorsabove
+
+{txt}Structural equation:
+
+OLS using CHS lasso-orthogonalized vars
+{res}{txt}{ralign 78:(Std. Err. adjusted for {res:41} clusters in highschoolstate)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}avg~20172019{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+satmathscore {c |}{col 14}{res}{space 2} 5505.028{col 26}{space 2} 1338.537{col 37}{space 1}    4.11{col 46}{space 3}0.000{col 54}{space 4} 2881.544{col 67}{space 3} 8128.513
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+OLS using CHS post-lasso-orthogonalized vars
+{res}{txt}{ralign 78:(Std. Err. adjusted for {res:41} clusters in highschoolstate)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}avg~20172019{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+satmathscore {c |}{col 14}{res}{space 2} 4439.135{col 26}{space 2} 1398.884{col 37}{space 1}    3.17{col 46}{space 3}0.002{col 54}{space 4} 1697.373{col 67}{space 3} 7180.897
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+OLS with PDS-selected variables and full regressor set
+{res}{txt}{ralign 91:(Std. Err. adjusted for {res:41} clusters in highschoolstate)}
+{hline 26}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 27}{c |}{col 39}    Robust
+{col 1}           avginc20172019{col 27}{c |}      Coef.{col 39}   Std. Err.{col 51}      z{col 59}   P>|z|{col 67}     [95% Con{col 80}f. Interval]
+{hline 26}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 13}satmathscore {c |}{col 27}{res}{space 2} 4427.066{col 39}{space 2} 1398.072{col 50}{space 1}    3.17{col 59}{space 3}0.002{col 67}{space 4} 1686.896{col 80}{space 3} 7167.236
+{txt}{space 5}advmathcreditsearned {c |}{col 27}{res}{space 2} 5213.693{col 39}{space 2} 1870.447{col 50}{space 1}    2.79{col 59}{space 3}0.005{col 67}{space 4} 1547.685{col 80}{space 3} 8879.701
+{txt}{space 19}female {c |}{col 27}{res}{space 2}-21384.44{col 39}{space 2} 2184.648{col 50}{space 1}   -9.79{col 59}{space 3}0.000{col 67}{space 4}-25666.27{col 80}{space 3}-17102.61
+{txt}{space 20}white {c |}{col 27}{res}{space 2}-2204.679{col 39}{space 2} 2755.171{col 50}{space 1}   -0.80{col 59}{space 3}0.424{col 67}{space 4}-7604.714{col 80}{space 3} 3195.356
+{txt}{space 15}avginc9799 {c |}{col 27}{res}{space 2} .2464315{col 39}{space 2} .1046666{col 50}{space 1}    2.35{col 59}{space 3}0.019{col 67}{space 4} .0412888{col 80}{space 3} .4515743
+{txt}averageincomepovratio9799 {c |}{col 27}{res}{space 2}-1234.351{col 39}{space 2} 1563.374{col 50}{space 1}   -0.79{col 59}{space 3}0.430{col 67}{space 4}-4298.508{col 80}{space 3} 1829.805
+{txt}{space 23}c1 {c |}{col 27}{res}{space 2} 8116.372{col 39}{space 2}  4098.83{col 50}{space 1}    1.98{col 59}{space 3}0.048{col 67}{space 4} 82.81292{col 80}{space 3} 16149.93
+{txt}{space 23}c2 {c |}{col 27}{res}{space 2} 5536.132{col 39}{space 2} 4569.345{col 50}{space 1}    1.21{col 59}{space 3}0.226{col 67}{space 4} -3419.62{col 80}{space 3} 14491.88
+{txt}{space 23}c3 {c |}{col 27}{res}{space 2}-2616.847{col 39}{space 2} 3991.795{col 50}{space 1}   -0.66{col 59}{space 3}0.512{col 67}{space 4}-10440.62{col 80}{space 3} 5206.927
+{txt}{space 23}c4 {c |}{col 27}{res}{space 2}-89.61812{col 39}{space 2} 5022.298{col 50}{space 1}   -0.02{col 59}{space 3}0.986{col 67}{space 4}-9933.142{col 80}{space 3} 9753.906
+{txt}{space 23}c5 {c |}{col 27}{res}{space 2}        0{col 39}{txt}  (omitted)
+{space 22}exp {c |}{col 27}{res}{space 2} 1331.175{col 39}{space 2} 565.5598{col 50}{space 1}    2.35{col 59}{space 3}0.019{col 67}{space 4}  222.698{col 80}{space 3} 2439.652
+{txt}{space 16}hsdiploma {c |}{col 27}{res}{space 2} 6995.557{col 39}{space 2} 7149.419{col 50}{space 1}    0.98{col 59}{space 3}0.328{col 67}{space 4}-7017.046{col 80}{space 3} 21008.16
+{txt}{space 11}belowbachelors {c |}{col 27}{res}{space 2} 3890.382{col 39}{space 2} 7650.492{col 50}{space 1}    0.51{col 59}{space 3}0.611{col 67}{space 4}-11104.31{col 80}{space 3} 18885.07
+{txt}{space 11}bachelorsabove {c |}{col 27}{res}{space 2} 28014.98{col 39}{space 2} 6826.028{col 50}{space 1}    4.10{col 59}{space 3}0.000{col 67}{space 4} 14636.21{col 80}{space 3} 41393.75
+{txt}{space 20}_cons {c |}{col 27}{res}{space 2} 16994.03{col 39}{space 2} 7882.435{col 50}{space 1}    2.16{col 59}{space 3}0.031{col 67}{space 4} 1544.742{col 80}{space 3} 32443.32
+{txt}{hline 26}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+Standard errors and test statistics valid for the following variables only:
+{col 5}satmathscore
+{hline 78}
+
+{com}. 
+. *advmathcreditsearned, female, white, avginc9799, averageincomepovratio9799 selected using lasso
+. 
+. *Run quantile regression at each quantile with controls determined by the lasso to examine satmathscore coefficient with exposure to STEM reform and save output tables
+. qreg2 avginc20172019 satmathscore advmathcreditsearned hsdiploma belowbachelors bachelorsabove female bothbioparents white avginc9799thou averageincomepovratio9799 exp i.hscohort i.highschoolstate, cluster(highschoolstate) quantile(.25)
+{res}
+{txt}.25 Quantile regression
+R-squared = {res}.16487468
+{txt}Number of obs = {res}1143
+{txt}Objective function = {res}10000.045
+
+{txt}Standard errors adjusted for {res}41{txt} clusters in highschoolstate
+{res}{txt}{hline 26}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}           avginc20172019{col 27}{c |}      Coef.{col 39}   Std. Err.{col 51}      t{col 59}   P>|t|{col 67}     [95% Con{col 80}f. Interval]
+{hline 26}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 13}satmathscore {c |}{col 27}{res}{space 2}-91.47005{col 39}{space 2} 803.8379{col 50}{space 1}   -0.11{col 59}{space 3}0.909{col 67}{space 4}-1668.716{col 80}{space 3} 1485.776
+{txt}{space 5}advmathcreditsearned {c |}{col 27}{res}{space 2} 3571.819{col 39}{space 2} 1264.351{col 50}{space 1}    2.83{col 59}{space 3}0.005{col 67}{space 4} 1090.979{col 80}{space 3} 6052.659
+{txt}{space 16}hsdiploma {c |}{col 27}{res}{space 2} 7054.004{col 39}{space 2} 6288.125{col 50}{space 1}    1.12{col 59}{space 3}0.262{col 67}{space 4}-5284.208{col 80}{space 3} 19392.22
+{txt}{space 11}belowbachelors {c |}{col 27}{res}{space 2} 804.0273{col 39}{space 2} 5761.425{col 50}{space 1}    0.14{col 59}{space 3}0.889{col 67}{space 4}-10500.72{col 80}{space 3} 12108.78
+{txt}{space 11}bachelorsabove {c |}{col 27}{res}{space 2} 19511.44{col 39}{space 2} 6379.403{col 50}{space 1}    3.06{col 59}{space 3}0.002{col 67}{space 4} 6994.125{col 80}{space 3} 32028.75
+{txt}{space 19}female {c |}{col 27}{res}{space 2}-12004.27{col 39}{space 2} 1419.963{col 50}{space 1}   -8.45{col 59}{space 3}0.000{col 67}{space 4}-14790.44{col 80}{space 3}-9218.092
+{txt}{space 11}bothbioparents {c |}{col 27}{res}{space 2} 1670.388{col 39}{space 2} 1630.868{col 50}{space 1}    1.02{col 59}{space 3}0.306{col 67}{space 4}-1529.611{col 80}{space 3} 4870.387
+{txt}{space 20}white {c |}{col 27}{res}{space 2}-1765.347{col 39}{space 2} 2285.708{col 50}{space 1}   -0.77{col 59}{space 3}0.440{col 67}{space 4}-6250.238{col 80}{space 3} 2719.543
+{txt}{space 11}avginc9799thou {c |}{col 27}{res}{space 2}   210.55{col 39}{space 2} 97.72626{col 50}{space 1}    2.15{col 59}{space 3}0.031{col 67}{space 4} 18.79696{col 80}{space 3} 402.3031
+{txt}averageincomepovratio9799 {c |}{col 27}{res}{space 2}-2380.383{col 39}{space 2} 1393.134{col 50}{space 1}   -1.71{col 59}{space 3}0.088{col 67}{space 4}-5113.913{col 80}{space 3} 353.1477
+{txt}{space 22}exp {c |}{col 27}{res}{space 2} 2454.082{col 39}{space 2} 1425.281{col 50}{space 1}    1.72{col 59}{space 3}0.085{col 67}{space 4}-342.5251{col 80}{space 3} 5250.688
+{txt}{space 25} {c |}
+{space 17}hscohort {c |}
+{space 20}1995  {c |}{col 27}{res}{space 2} 1793.705{col 39}{space 2}  2763.71{col 50}{space 1}    0.65{col 59}{space 3}0.516{col 67}{space 4}-3629.095{col 80}{space 3} 7216.505
+{txt}{space 20}1996  {c |}{col 27}{res}{space 2}-3479.935{col 39}{space 2} 2220.556{col 50}{space 1}   -1.57{col 59}{space 3}0.117{col 67}{space 4}-7836.988{col 80}{space 3} 877.1179
+{txt}{space 20}1997  {c |}{col 27}{res}{space 2}-2317.201{col 39}{space 2} 3553.297{col 50}{space 1}   -0.65{col 59}{space 3}0.514{col 67}{space 4}-9289.283{col 80}{space 3} 4654.881
+{txt}{space 20}1998  {c |}{col 27}{res}{space 2}-4393.746{col 39}{space 2} 3319.818{col 50}{space 1}   -1.32{col 59}{space 3}0.186{col 67}{space 4}-10907.71{col 80}{space 3} 2120.217
+{txt}{space 25} {c |}
+{space 10}highschoolstate {c |}
+{space 23}2  {c |}{col 27}{res}{space 2} 26693.87{col 39}{space 2} 4235.502{col 50}{space 1}    6.30{col 59}{space 3}0.000{col 67}{space 4}  18383.2{col 80}{space 3} 35004.53
+{txt}{space 23}3  {c |}{col 27}{res}{space 2} 9481.027{col 39}{space 2} 2082.624{col 50}{space 1}    4.55{col 59}{space 3}0.000{col 67}{space 4} 5394.616{col 80}{space 3} 13567.44
+{txt}{space 23}4  {c |}{col 27}{res}{space 2}-13691.74{col 39}{space 2} 7850.174{col 50}{space 1}   -1.74{col 59}{space 3}0.081{col 67}{space 4}-29094.92{col 80}{space 3} 1711.436
+{txt}{space 23}5  {c |}{col 27}{res}{space 2} 2605.343{col 39}{space 2} 5466.406{col 50}{space 1}    0.48{col 59}{space 3}0.634{col 67}{space 4}-8120.537{col 80}{space 3} 13331.22
+{txt}{space 23}6  {c |}{col 27}{res}{space 2}-354.5093{col 39}{space 2} 3951.167{col 50}{space 1}   -0.09{col 59}{space 3}0.929{col 67}{space 4}-8107.271{col 80}{space 3} 7398.253
+{txt}{space 23}7  {c |}{col 27}{res}{space 2} 5391.374{col 39}{space 2} 8668.693{col 50}{space 1}    0.62{col 59}{space 3}0.534{col 67}{space 4}-11617.86{col 80}{space 3} 22400.61
+{txt}{space 23}8  {c |}{col 27}{res}{space 2}  4623.55{col 39}{space 2} 6898.957{col 50}{space 1}    0.67{col 59}{space 3}0.503{col 67}{space 4}-8913.202{col 80}{space 3}  18160.3
+{txt}{space 23}9  {c |}{col 27}{res}{space 2} 6332.026{col 39}{space 2} 11376.38{col 50}{space 1}    0.56{col 59}{space 3}0.578{col 67}{space 4}-15990.08{col 80}{space 3} 28654.13
+{txt}{space 22}10  {c |}{col 27}{res}{space 2}-796.7313{col 39}{space 2} 6956.647{col 50}{space 1}   -0.11{col 59}{space 3}0.909{col 67}{space 4}-14446.68{col 80}{space 3} 12853.22
+{txt}{space 22}11  {c |}{col 27}{res}{space 2}-5218.965{col 39}{space 2} 5933.558{col 50}{space 1}   -0.88{col 59}{space 3}0.379{col 67}{space 4}-16861.47{col 80}{space 3} 6423.535
+{txt}{space 22}14  {c |}{col 27}{res}{space 2}-6743.661{col 39}{space 2} 8742.076{col 50}{space 1}   -0.77{col 59}{space 3}0.441{col 67}{space 4}-23896.88{col 80}{space 3} 10409.56
+{txt}{space 22}15  {c |}{col 27}{res}{space 2} 12.96607{col 39}{space 2} 6998.037{col 50}{space 1}    0.00{col 59}{space 3}0.999{col 67}{space 4} -13718.2{col 80}{space 3} 13744.13
+{txt}{space 22}17  {c |}{col 27}{res}{space 2} 35461.59{col 39}{space 2} 15187.16{col 50}{space 1}    2.33{col 59}{space 3}0.020{col 67}{space 4} 5662.186{col 80}{space 3}    65261
+{txt}{space 22}18  {c |}{col 27}{res}{space 2}-20416.35{col 39}{space 2} 7999.852{col 50}{space 1}   -2.55{col 59}{space 3}0.011{col 67}{space 4}-36113.22{col 80}{space 3}-4719.481
+{txt}{space 22}19  {c |}{col 27}{res}{space 2}-5955.064{col 39}{space 2}  6806.98{col 50}{space 1}   -0.87{col 59}{space 3}0.382{col 67}{space 4}-19311.34{col 80}{space 3} 7401.216
+{txt}{space 22}21  {c |}{col 27}{res}{space 2} 1771.198{col 39}{space 2} 7068.305{col 50}{space 1}    0.25{col 59}{space 3}0.802{col 67}{space 4}-12097.84{col 80}{space 3} 15640.24
+{txt}{space 22}22  {c |}{col 27}{res}{space 2}-6119.329{col 39}{space 2} 4158.402{col 50}{space 1}   -1.47{col 59}{space 3}0.141{col 67}{space 4}-14278.71{col 80}{space 3} 2040.058
+{txt}{space 22}23  {c |}{col 27}{res}{space 2} 18732.69{col 39}{space 2} 3827.281{col 50}{space 1}    4.89{col 59}{space 3}0.000{col 67}{space 4} 11223.01{col 80}{space 3} 26242.36
+{txt}{space 22}24  {c |}{col 27}{res}{space 2}-5981.453{col 39}{space 2}  7781.71{col 50}{space 1}   -0.77{col 59}{space 3}0.442{col 67}{space 4}-21250.29{col 80}{space 3} 9287.388
+{txt}{space 22}25  {c |}{col 27}{res}{space 2} -38787.8{col 39}{space 2} 10126.13{col 50}{space 1}   -3.83{col 59}{space 3}0.000{col 67}{space 4}-58656.72{col 80}{space 3}-18918.87
+{txt}{space 22}26  {c |}{col 27}{res}{space 2} 18155.68{col 39}{space 2} 6319.928{col 50}{space 1}    2.87{col 59}{space 3}0.004{col 67}{space 4} 5755.069{col 80}{space 3}  30556.3
+{txt}{space 22}27  {c |}{col 27}{res}{space 2} 35871.55{col 39}{space 2} 6142.784{col 50}{space 1}    5.84{col 59}{space 3}0.000{col 67}{space 4} 23818.52{col 80}{space 3} 47924.58
+{txt}{space 22}31  {c |}{col 27}{res}{space 2} 19259.04{col 39}{space 2} 2233.987{col 50}{space 1}    8.62{col 59}{space 3}0.000{col 67}{space 4} 14875.63{col 80}{space 3} 23642.44
+{txt}{space 22}32  {c |}{col 27}{res}{space 2} 50618.91{col 39}{space 2} 16286.56{col 50}{space 1}    3.11{col 59}{space 3}0.002{col 67}{space 4} 18662.32{col 80}{space 3} 82575.49
+{txt}{space 22}33  {c |}{col 27}{res}{space 2} 14273.65{col 39}{space 2} 1759.321{col 50}{space 1}    8.11{col 59}{space 3}0.000{col 67}{space 4}  10821.6{col 80}{space 3} 17725.69
+{txt}{space 22}34  {c |}{col 27}{res}{space 2} 8090.483{col 39}{space 2} 1937.641{col 50}{space 1}    4.18{col 59}{space 3}0.000{col 67}{space 4} 4288.551{col 80}{space 3} 11892.42
+{txt}{space 22}35  {c |}{col 27}{res}{space 2} 13410.13{col 39}{space 2} 8635.631{col 50}{space 1}    1.55{col 59}{space 3}0.121{col 67}{space 4}-3534.232{col 80}{space 3} 30354.48
+{txt}{space 22}36  {c |}{col 27}{res}{space 2} 41446.31{col 39}{space 2} 5694.945{col 50}{space 1}    7.28{col 59}{space 3}0.000{col 67}{space 4}    30272{col 80}{space 3} 52620.61
+{txt}{space 22}37  {c |}{col 27}{res}{space 2}-7114.065{col 39}{space 2} 7601.774{col 50}{space 1}   -0.94{col 59}{space 3}0.350{col 67}{space 4}-22029.85{col 80}{space 3} 7801.715
+{txt}{space 22}38  {c |}{col 27}{res}{space 2} 11091.35{col 39}{space 2} 3123.407{col 50}{space 1}    3.55{col 59}{space 3}0.000{col 67}{space 4} 4962.775{col 80}{space 3} 17219.93
+{txt}{space 22}39  {c |}{col 27}{res}{space 2} 1331.448{col 39}{space 2} 6125.858{col 50}{space 1}    0.22{col 59}{space 3}0.828{col 67}{space 4}-10688.37{col 80}{space 3} 13351.27
+{txt}{space 22}40  {c |}{col 27}{res}{space 2} 1925.559{col 39}{space 2} 11596.07{col 50}{space 1}    0.17{col 59}{space 3}0.868{col 67}{space 4}-20827.61{col 80}{space 3} 24678.73
+{txt}{space 22}41  {c |}{col 27}{res}{space 2}-7043.831{col 39}{space 2} 7138.017{col 50}{space 1}   -0.99{col 59}{space 3}0.324{col 67}{space 4}-21049.65{col 80}{space 3}  6961.99
+{txt}{space 22}42  {c |}{col 27}{res}{space 2} 12724.33{col 39}{space 2} 5044.565{col 50}{space 1}    2.52{col 59}{space 3}0.012{col 67}{space 4}  2826.16{col 80}{space 3} 22622.49
+{txt}{space 22}43  {c |}{col 27}{res}{space 2} 8237.301{col 39}{space 2} 8548.777{col 50}{space 1}    0.96{col 59}{space 3}0.335{col 67}{space 4}-8536.637{col 80}{space 3} 25011.24
+{txt}{space 22}44  {c |}{col 27}{res}{space 2} 14570.81{col 39}{space 2} 1843.941{col 50}{space 1}    7.90{col 59}{space 3}0.000{col 67}{space 4} 10952.73{col 80}{space 3} 18188.89
+{txt}{space 22}46  {c |}{col 27}{res}{space 2} 12350.21{col 39}{space 2} 4395.715{col 50}{space 1}    2.81{col 59}{space 3}0.005{col 67}{space 4} 3725.184{col 80}{space 3} 20975.24
+{txt}{space 22}47  {c |}{col 27}{res}{space 2} 5784.149{col 39}{space 2} 2407.114{col 50}{space 1}    2.40{col 59}{space 3}0.016{col 67}{space 4} 1061.043{col 80}{space 3} 10507.25
+{txt}{space 22}48  {c |}{col 27}{res}{space 2} 2858.301{col 39}{space 2}  6560.94{col 50}{space 1}    0.44{col 59}{space 3}0.663{col 67}{space 4}-10015.21{col 80}{space 3} 15731.81
+{txt}{space 22}50  {c |}{col 27}{res}{space 2}-12920.45{col 39}{space 2} 7809.099{col 50}{space 1}   -1.65{col 59}{space 3}0.098{col 67}{space 4}-28243.03{col 80}{space 3} 2402.138
+{txt}{space 25} {c |}
+{space 20}_cons {c |}{col 27}{res}{space 2} 9996.998{col 39}{space 2} 7284.815{col 50}{space 1}    1.37{col 59}{space 3}0.170{col 67}{space 4}-4296.865{col 80}{space 3} 24290.86
+{txt}{hline 26}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+Parente-Santos Silva test for intra-cluster correlation
+         Ho: No intra-cluster correlation
+
+            T{col 17}=  {res}-2.813
+{txt}         P>|T|  =  {res} 0.005
+{txt}
+{com}. 
+. estadd local fe Yes
+
+{txt}added macro:
+                 e(fe) : "{res:Yes}"
+
+{com}. 
+. est sto m4
+{txt}
+{com}.  
+. qreg2 avginc20172019 satmathscore advmathcreditsearned hsdiploma belowbachelors bachelorsabove female bothbioparents white avginc9799thou averageincomepovratio9799 exp i.hscohort i.highschoolstate, cluster(highschoolstate) quantile(.50)
+{res}
+{txt}Median regression
+R-squared = {res}.18906844
+{txt}Number of obs = {res}1143
+{txt}Objective function = {res}14827.956
+
+{txt}Standard errors adjusted for {res}41{txt} clusters in highschoolstate
+{res}{txt}{hline 26}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}           avginc20172019{col 27}{c |}      Coef.{col 39}   Std. Err.{col 51}      t{col 59}   P>|t|{col 67}     [95% Con{col 80}f. Interval]
+{hline 26}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 13}satmathscore {c |}{col 27}{res}{space 2} 167.2329{col 39}{space 2} 949.9633{col 50}{space 1}    0.18{col 59}{space 3}0.860{col 67}{space 4}-1696.733{col 80}{space 3} 2031.198
+{txt}{space 5}advmathcreditsearned {c |}{col 27}{res}{space 2} 3700.588{col 39}{space 2} 1249.378{col 50}{space 1}    2.96{col 59}{space 3}0.003{col 67}{space 4} 1249.127{col 80}{space 3} 6152.048
+{txt}{space 16}hsdiploma {c |}{col 27}{res}{space 2} 6465.259{col 39}{space 2} 6564.208{col 50}{space 1}    0.98{col 59}{space 3}0.325{col 67}{space 4}-6414.667{col 80}{space 3} 19345.19
+{txt}{space 11}belowbachelors {c |}{col 27}{res}{space 2} 7710.686{col 39}{space 2}  6197.77{col 50}{space 1}    1.24{col 59}{space 3}0.214{col 67}{space 4}-4450.236{col 80}{space 3} 19871.61
+{txt}{space 11}bachelorsabove {c |}{col 27}{res}{space 2} 26429.37{col 39}{space 2} 7245.062{col 50}{space 1}    3.65{col 59}{space 3}0.000{col 67}{space 4} 12213.51{col 80}{space 3} 40645.23
+{txt}{space 19}female {c |}{col 27}{res}{space 2} -15220.4{col 39}{space 2} 1522.077{col 50}{space 1}  -10.00{col 59}{space 3}0.000{col 67}{space 4}-18206.94{col 80}{space 3}-12233.86
+{txt}{space 11}bothbioparents {c |}{col 27}{res}{space 2} 1107.812{col 39}{space 2} 1813.243{col 50}{space 1}    0.61{col 59}{space 3}0.541{col 67}{space 4}-2450.034{col 80}{space 3} 4665.657
+{txt}{space 20}white {c |}{col 27}{res}{space 2} 1747.867{col 39}{space 2} 2963.772{col 50}{space 1}    0.59{col 59}{space 3}0.555{col 67}{space 4}-4067.482{col 80}{space 3} 7563.216
+{txt}{space 11}avginc9799thou {c |}{col 27}{res}{space 2} 259.4529{col 39}{space 2} 84.89648{col 50}{space 1}    3.06{col 59}{space 3}0.002{col 67}{space 4} 92.87372{col 80}{space 3} 426.0321
+{txt}averageincomepovratio9799 {c |}{col 27}{res}{space 2}-2256.307{col 39}{space 2}  1308.34{col 50}{space 1}   -1.72{col 59}{space 3}0.085{col 67}{space 4} -4823.46{col 80}{space 3} 310.8456
+{txt}{space 22}exp {c |}{col 27}{res}{space 2}  3590.73{col 39}{space 2} 1749.165{col 50}{space 1}    2.05{col 59}{space 3}0.040{col 67}{space 4} 158.6161{col 80}{space 3} 7022.845
+{txt}{space 25} {c |}
+{space 17}hscohort {c |}
+{space 20}1995  {c |}{col 27}{res}{space 2} 4077.653{col 39}{space 2} 4020.773{col 50}{space 1}    1.01{col 59}{space 3}0.311{col 67}{space 4}-3811.686{col 80}{space 3} 11966.99
+{txt}{space 20}1996  {c |}{col 27}{res}{space 2}-3403.161{col 39}{space 2} 2404.572{col 50}{space 1}   -1.42{col 59}{space 3}0.157{col 67}{space 4}-8121.279{col 80}{space 3} 1314.956
+{txt}{space 20}1997  {c |}{col 27}{res}{space 2} 1297.522{col 39}{space 2} 3615.886{col 50}{space 1}    0.36{col 59}{space 3}0.720{col 67}{space 4}-5797.369{col 80}{space 3} 8392.414
+{txt}{space 20}1998  {c |}{col 27}{res}{space 2}-6149.856{col 39}{space 2} 3805.159{col 50}{space 1}   -1.62{col 59}{space 3}0.106{col 67}{space 4}-13616.13{col 80}{space 3} 1316.418
+{txt}{space 25} {c |}
+{space 10}highschoolstate {c |}
+{space 23}2  {c |}{col 27}{res}{space 2} 6545.523{col 39}{space 2} 5283.026{col 50}{space 1}    1.24{col 59}{space 3}0.216{col 67}{space 4}-3820.539{col 80}{space 3} 16911.58
+{txt}{space 23}3  {c |}{col 27}{res}{space 2}-1987.398{col 39}{space 2}  6349.23{col 50}{space 1}   -0.31{col 59}{space 3}0.754{col 67}{space 4}-14445.51{col 80}{space 3} 10470.71
+{txt}{space 23}4  {c |}{col 27}{res}{space 2}-29568.06{col 39}{space 2} 10086.58{col 50}{space 1}   -2.93{col 59}{space 3}0.003{col 67}{space 4}-49359.39{col 80}{space 3}-9776.729
+{txt}{space 23}5  {c |}{col 27}{res}{space 2}-10003.11{col 39}{space 2} 8910.343{col 50}{space 1}   -1.12{col 59}{space 3}0.262{col 67}{space 4}-27486.49{col 80}{space 3} 7480.271
+{txt}{space 23}6  {c |}{col 27}{res}{space 2}-2143.022{col 39}{space 2} 5154.172{col 50}{space 1}   -0.42{col 59}{space 3}0.678{col 67}{space 4}-12256.25{col 80}{space 3}  7970.21
+{txt}{space 23}7  {c |}{col 27}{res}{space 2}-9522.891{col 39}{space 2} 10890.45{col 50}{space 1}   -0.87{col 59}{space 3}0.382{col 67}{space 4}-30891.53{col 80}{space 3} 11845.75
+{txt}{space 23}8  {c |}{col 27}{res}{space 2}-13863.34{col 39}{space 2} 9833.812{col 50}{space 1}   -1.41{col 59}{space 3}0.159{col 67}{space 4} -33158.7{col 80}{space 3} 5432.027
+{txt}{space 23}9  {c |}{col 27}{res}{space 2} -31919.3{col 39}{space 2} 10019.06{col 50}{space 1}   -3.19{col 59}{space 3}0.001{col 67}{space 4}-51578.14{col 80}{space 3}-12260.45
+{txt}{space 22}10  {c |}{col 27}{res}{space 2}-12203.73{col 39}{space 2} 9851.238{col 50}{space 1}   -1.24{col 59}{space 3}0.216{col 67}{space 4}-31533.28{col 80}{space 3} 7125.826
+{txt}{space 22}11  {c |}{col 27}{res}{space 2}-23051.99{col 39}{space 2} 7865.302{col 50}{space 1}   -2.93{col 59}{space 3}0.003{col 67}{space 4}-38484.85{col 80}{space 3}-7619.131
+{txt}{space 22}14  {c |}{col 27}{res}{space 2}-3001.614{col 39}{space 2} 11676.75{col 50}{space 1}   -0.26{col 59}{space 3}0.797{col 67}{space 4}-25913.08{col 80}{space 3} 19909.85
+{txt}{space 22}15  {c |}{col 27}{res}{space 2}-19320.41{col 39}{space 2} 10478.07{col 50}{space 1}   -1.84{col 59}{space 3}0.065{col 67}{space 4}-39879.91{col 80}{space 3} 1239.089
+{txt}{space 22}17  {c |}{col 27}{res}{space 2} 6191.324{col 39}{space 2} 4725.547{col 50}{space 1}    1.31{col 59}{space 3}0.190{col 67}{space 4}-3080.884{col 80}{space 3} 15463.53
+{txt}{space 22}18  {c |}{col 27}{res}{space 2}-40182.11{col 39}{space 2} 12602.24{col 50}{space 1}   -3.19{col 59}{space 3}0.001{col 67}{space 4}-64909.52{col 80}{space 3} -15454.7
+{txt}{space 22}19  {c |}{col 27}{res}{space 2}-581.3274{col 39}{space 2} 9806.428{col 50}{space 1}   -0.06{col 59}{space 3}0.953{col 67}{space 4}-19822.96{col 80}{space 3}  18660.3
+{txt}{space 22}21  {c |}{col 27}{res}{space 2}-11534.11{col 39}{space 2} 9618.581{col 50}{space 1}   -1.20{col 59}{space 3}0.231{col 67}{space 4}-30407.16{col 80}{space 3} 7338.933
+{txt}{space 22}22  {c |}{col 27}{res}{space 2} 3447.618{col 39}{space 2} 4663.901{col 50}{space 1}    0.74{col 59}{space 3}0.460{col 67}{space 4}-5703.632{col 80}{space 3} 12598.87
+{txt}{space 22}23  {c |}{col 27}{res}{space 2} -5525.42{col 39}{space 2} 4406.022{col 50}{space 1}   -1.25{col 59}{space 3}0.210{col 67}{space 4}-14170.67{col 80}{space 3} 3119.832
+{txt}{space 22}24  {c |}{col 27}{res}{space 2}-14893.78{col 39}{space 2} 10625.67{col 50}{space 1}   -1.40{col 59}{space 3}0.161{col 67}{space 4}-35742.87{col 80}{space 3} 5955.316
+{txt}{space 22}25  {c |}{col 27}{res}{space 2}-35691.53{col 39}{space 2} 19690.38{col 50}{space 1}   -1.81{col 59}{space 3}0.070{col 67}{space 4}-74326.91{col 80}{space 3} 2943.847
+{txt}{space 22}26  {c |}{col 27}{res}{space 2} -7968.34{col 39}{space 2} 4965.291{col 50}{space 1}   -1.60{col 59}{space 3}0.109{col 67}{space 4}-17710.96{col 80}{space 3}  1774.28
+{txt}{space 22}27  {c |}{col 27}{res}{space 2} 9750.647{col 39}{space 2} 6602.933{col 50}{space 1}    1.48{col 59}{space 3}0.140{col 67}{space 4}-3205.263{col 80}{space 3} 22706.56
+{txt}{space 22}31  {c |}{col 27}{res}{space 2}  3852.63{col 39}{space 2} 4065.619{col 50}{space 1}    0.95{col 59}{space 3}0.344{col 67}{space 4}-4124.704{col 80}{space 3} 11829.96
+{txt}{space 22}32  {c |}{col 27}{res}{space 2}  43524.1{col 39}{space 2} 20527.72{col 50}{space 1}    2.12{col 59}{space 3}0.034{col 67}{space 4} 3245.731{col 80}{space 3} 83802.47
+{txt}{space 22}33  {c |}{col 27}{res}{space 2} 915.2366{col 39}{space 2} 4825.035{col 50}{space 1}    0.19{col 59}{space 3}0.850{col 67}{space 4} -8552.18{col 80}{space 3} 10382.65
+{txt}{space 22}34  {c |}{col 27}{res}{space 2}-6520.517{col 39}{space 2} 4798.064{col 50}{space 1}   -1.36{col 59}{space 3}0.174{col 67}{space 4}-15935.01{col 80}{space 3} 2893.979
+{txt}{space 22}35  {c |}{col 27}{res}{space 2}-6120.114{col 39}{space 2} 4649.472{col 50}{space 1}   -1.32{col 59}{space 3}0.188{col 67}{space 4}-15243.05{col 80}{space 3} 3002.823
+{txt}{space 22}36  {c |}{col 27}{res}{space 2} 21055.05{col 39}{space 2}  4992.88{col 50}{space 1}    4.22{col 59}{space 3}0.000{col 67}{space 4}  11258.3{col 80}{space 3}  30851.8
+{txt}{space 22}37  {c |}{col 27}{res}{space 2}-33189.02{col 39}{space 2} 9972.525{col 50}{space 1}   -3.33{col 59}{space 3}0.001{col 67}{space 4}-52756.55{col 80}{space 3}-13621.48
+{txt}{space 22}38  {c |}{col 27}{res}{space 2} 13235.42{col 39}{space 2} 6923.072{col 50}{space 1}    1.91{col 59}{space 3}0.056{col 67}{space 4}-348.6517{col 80}{space 3} 26819.49
+{txt}{space 22}39  {c |}{col 27}{res}{space 2} -18366.3{col 39}{space 2}  9878.36{col 50}{space 1}   -1.86{col 59}{space 3}0.063{col 67}{space 4}-37749.08{col 80}{space 3} 1016.469
+{txt}{space 22}40  {c |}{col 27}{res}{space 2}-26055.19{col 39}{space 2} 10117.15{col 50}{space 1}   -2.58{col 59}{space 3}0.010{col 67}{space 4} -45906.5{col 80}{space 3}-6203.879
+{txt}{space 22}41  {c |}{col 27}{res}{space 2}-24083.74{col 39}{space 2} 9457.856{col 50}{space 1}   -2.55{col 59}{space 3}0.011{col 67}{space 4}-42641.42{col 80}{space 3}-5526.053
+{txt}{space 22}42  {c |}{col 27}{res}{space 2} 26223.24{col 39}{space 2} 10337.02{col 50}{space 1}    2.54{col 59}{space 3}0.011{col 67}{space 4} 5940.511{col 80}{space 3} 46505.96
+{txt}{space 22}43  {c |}{col 27}{res}{space 2} 23577.77{col 39}{space 2} 12363.34{col 50}{space 1}    1.91{col 59}{space 3}0.057{col 67}{space 4}-680.8988{col 80}{space 3} 47836.44
+{txt}{space 22}44  {c |}{col 27}{res}{space 2}-1950.837{col 39}{space 2}  3996.52{col 50}{space 1}   -0.49{col 59}{space 3}0.626{col 67}{space 4}-9792.587{col 80}{space 3} 5890.913
+{txt}{space 22}46  {c |}{col 27}{res}{space 2}-3745.254{col 39}{space 2} 5902.747{col 50}{space 1}   -0.63{col 59}{space 3}0.526{col 67}{space 4} -15327.3{col 80}{space 3}  7836.79
+{txt}{space 22}47  {c |}{col 27}{res}{space 2} 570.5312{col 39}{space 2} 4163.645{col 50}{space 1}    0.14{col 59}{space 3}0.891{col 67}{space 4}-7599.144{col 80}{space 3} 8740.206
+{txt}{space 22}48  {c |}{col 27}{res}{space 2}-20388.27{col 39}{space 2} 10466.59{col 50}{space 1}   -1.95{col 59}{space 3}0.052{col 67}{space 4}-40925.23{col 80}{space 3} 148.6888
+{txt}{space 22}50  {c |}{col 27}{res}{space 2} 5759.046{col 39}{space 2} 18090.27{col 50}{space 1}    0.32{col 59}{space 3}0.750{col 67}{space 4}-29736.68{col 80}{space 3} 41254.77
+{txt}{space 25} {c |}
+{space 20}_cons {c |}{col 27}{res}{space 2}  26749.3{col 39}{space 2} 3300.586{col 50}{space 1}    8.10{col 59}{space 3}0.000{col 67}{space 4} 20273.07{col 80}{space 3} 33225.53
+{txt}{hline 26}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+Parente-Santos Silva test for intra-cluster correlation
+         Ho: No intra-cluster correlation
+
+            T{col 17}=  {res}-3.756
+{txt}         P>|T|  =  {res} 0.000
+{txt}
+{com}. 
+. estadd local fe Yes
+
+{txt}added macro:
+                 e(fe) : "{res:Yes}"
+
+{com}. 
+. est sto m5
+{txt}
+{com}. 
+. qreg2 avginc20172019 satmathscore advmathcreditsearned hsdiploma belowbachelors bachelorsabove female bothbioparents white avginc9799thou averageincomepovratio9799 exp i.hscohort i.highschoolstate, cluster(highschoolstate) quantile(.75)
+{res}
+{txt}.75 Quantile regression
+R-squared = {res}.18860569
+{txt}Number of obs = {res}1143
+{txt}Objective function = {res}14673.638
+
+{txt}Standard errors adjusted for {res}41{txt} clusters in highschoolstate
+{res}{txt}{hline 26}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}           avginc20172019{col 27}{c |}      Coef.{col 39}   Std. Err.{col 51}      t{col 59}   P>|t|{col 67}     [95% Con{col 80}f. Interval]
+{hline 26}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 13}satmathscore {c |}{col 27}{res}{space 2} 2192.768{col 39}{space 2}  1712.84{col 50}{space 1}    1.28{col 59}{space 3}0.201{col 67}{space 4}-1168.072{col 80}{space 3} 5553.608
+{txt}{space 5}advmathcreditsearned {c |}{col 27}{res}{space 2} 5240.965{col 39}{space 2} 2774.114{col 50}{space 1}    1.89{col 59}{space 3}0.059{col 67}{space 4}-202.2485{col 80}{space 3} 10684.18
+{txt}{space 16}hsdiploma {c |}{col 27}{res}{space 2} 5467.565{col 39}{space 2} 9795.739{col 50}{space 1}    0.56{col 59}{space 3}0.577{col 67}{space 4}-13753.09{col 80}{space 3} 24688.22
+{txt}{space 11}belowbachelors {c |}{col 27}{res}{space 2} 7210.825{col 39}{space 2} 11386.64{col 50}{space 1}    0.63{col 59}{space 3}0.527{col 67}{space 4}-15131.42{col 80}{space 3} 29553.07
+{txt}{space 11}bachelorsabove {c |}{col 27}{res}{space 2} 24508.58{col 39}{space 2} 11360.11{col 50}{space 1}    2.16{col 59}{space 3}0.031{col 67}{space 4} 2218.394{col 80}{space 3} 46798.76
+{txt}{space 19}female {c |}{col 27}{res}{space 2}-21155.87{col 39}{space 2} 2680.462{col 50}{space 1}   -7.89{col 59}{space 3}0.000{col 67}{space 4}-26415.32{col 80}{space 3}-15896.42
+{txt}{space 11}bothbioparents {c |}{col 27}{res}{space 2}-1391.797{col 39}{space 2} 2602.537{col 50}{space 1}   -0.53{col 59}{space 3}0.593{col 67}{space 4}-6498.351{col 80}{space 3} 3714.757
+{txt}{space 20}white {c |}{col 27}{res}{space 2} 1482.097{col 39}{space 2} 3378.421{col 50}{space 1}    0.44{col 59}{space 3}0.661{col 67}{space 4}-5146.853{col 80}{space 3} 8111.047
+{txt}{space 11}avginc9799thou {c |}{col 27}{res}{space 2} 230.1979{col 39}{space 2} 178.8584{col 50}{space 1}    1.29{col 59}{space 3}0.198{col 67}{space 4}-120.7481{col 80}{space 3}  581.144
+{txt}averageincomepovratio9799 {c |}{col 27}{res}{space 2}-416.6429{col 39}{space 2} 3025.228{col 50}{space 1}   -0.14{col 59}{space 3}0.890{col 67}{space 4}-6352.577{col 80}{space 3} 5519.291
+{txt}{space 22}exp {c |}{col 27}{res}{space 2} 3932.529{col 39}{space 2} 2678.119{col 50}{space 1}    1.47{col 59}{space 3}0.142{col 67}{space 4}-1322.328{col 80}{space 3} 9187.385
+{txt}{space 25} {c |}
+{space 17}hscohort {c |}
+{space 20}1995  {c |}{col 27}{res}{space 2} -1687.51{col 39}{space 2} 4419.772{col 50}{space 1}   -0.38{col 59}{space 3}0.703{col 67}{space 4}-10359.74{col 80}{space 3} 6984.722
+{txt}{space 20}1996  {c |}{col 27}{res}{space 2} -10901.5{col 39}{space 2} 5153.368{col 50}{space 1}   -2.12{col 59}{space 3}0.035{col 67}{space 4}-21013.16{col 80}{space 3}-789.8502
+{txt}{space 20}1997  {c |}{col 27}{res}{space 2}-9762.042{col 39}{space 2} 6016.409{col 50}{space 1}   -1.62{col 59}{space 3}0.105{col 67}{space 4}-21567.11{col 80}{space 3} 2043.023
+{txt}{space 20}1998  {c |}{col 27}{res}{space 2}-12660.81{col 39}{space 2} 6301.554{col 50}{space 1}   -2.01{col 59}{space 3}0.045{col 67}{space 4}-25025.38{col 80}{space 3}-296.2541
+{txt}{space 25} {c |}
+{space 10}highschoolstate {c |}
+{space 23}2  {c |}{col 27}{res}{space 2} 19164.22{col 39}{space 2} 4765.858{col 50}{space 1}    4.02{col 59}{space 3}0.000{col 67}{space 4} 9812.913{col 80}{space 3} 28515.52
+{txt}{space 23}3  {c |}{col 27}{res}{space 2}  1126.02{col 39}{space 2} 8345.619{col 50}{space 1}    0.13{col 59}{space 3}0.893{col 67}{space 4}-15249.29{col 80}{space 3} 17501.33
+{txt}{space 23}4  {c |}{col 27}{res}{space 2}-46644.76{col 39}{space 2} 15377.65{col 50}{space 1}   -3.03{col 59}{space 3}0.002{col 67}{space 4}-76817.94{col 80}{space 3}-16471.57
+{txt}{space 23}5  {c |}{col 27}{res}{space 2}-7987.789{col 39}{space 2} 17321.75{col 50}{space 1}   -0.46{col 59}{space 3}0.645{col 67}{space 4}-41975.58{col 80}{space 3}    26000
+{txt}{space 23}6  {c |}{col 27}{res}{space 2}-4419.457{col 39}{space 2} 9042.743{col 50}{space 1}   -0.49{col 59}{space 3}0.625{col 67}{space 4}-22162.63{col 80}{space 3} 13323.71
+{txt}{space 23}7  {c |}{col 27}{res}{space 2}-14455.32{col 39}{space 2} 16921.16{col 50}{space 1}   -0.85{col 59}{space 3}0.393{col 67}{space 4} -47657.1{col 80}{space 3} 18746.45
+{txt}{space 23}8  {c |}{col 27}{res}{space 2}-19868.43{col 39}{space 2} 16950.73{col 50}{space 1}   -1.17{col 59}{space 3}0.241{col 67}{space 4}-53128.22{col 80}{space 3} 13391.35
+{txt}{space 23}9  {c |}{col 27}{res}{space 2}-57128.26{col 39}{space 2} 9932.207{col 50}{space 1}   -5.75{col 59}{space 3}0.000{col 67}{space 4}-76616.68{col 80}{space 3}-37639.83
+{txt}{space 22}10  {c |}{col 27}{res}{space 2}-15942.19{col 39}{space 2} 17820.86{col 50}{space 1}   -0.89{col 59}{space 3}0.371{col 67}{space 4}-50909.31{col 80}{space 3} 19024.92
+{txt}{space 22}11  {c |}{col 27}{res}{space 2}-20866.78{col 39}{space 2} 17582.54{col 50}{space 1}   -1.19{col 59}{space 3}0.236{col 67}{space 4}-55366.26{col 80}{space 3} 13632.71
+{txt}{space 22}14  {c |}{col 27}{res}{space 2} 3101.448{col 39}{space 2} 18860.06{col 50}{space 1}    0.16{col 59}{space 3}0.869{col 67}{space 4}-33904.72{col 80}{space 3} 40107.62
+{txt}{space 22}15  {c |}{col 27}{res}{space 2}-17871.06{col 39}{space 2} 17598.16{col 50}{space 1}   -1.02{col 59}{space 3}0.310{col 67}{space 4} -52401.2{col 80}{space 3} 16659.08
+{txt}{space 22}17  {c |}{col 27}{res}{space 2} 20904.72{col 39}{space 2} 8250.826{col 50}{space 1}    2.53{col 59}{space 3}0.011{col 67}{space 4} 4715.407{col 80}{space 3} 37094.04
+{txt}{space 22}18  {c |}{col 27}{res}{space 2}-22519.39{col 39}{space 2} 21510.84{col 50}{space 1}   -1.05{col 59}{space 3}0.295{col 67}{space 4}-64726.76{col 80}{space 3} 19687.98
+{txt}{space 22}19  {c |}{col 27}{res}{space 2} 49455.05{col 39}{space 2} 16076.22{col 50}{space 1}    3.08{col 59}{space 3}0.002{col 67}{space 4} 17911.18{col 80}{space 3} 80998.92
+{txt}{space 22}21  {c |}{col 27}{res}{space 2}-12701.35{col 39}{space 2} 17034.92{col 50}{space 1}   -0.75{col 59}{space 3}0.456{col 67}{space 4}-46126.33{col 80}{space 3} 20723.64
+{txt}{space 22}22  {c |}{col 27}{res}{space 2} 24364.56{col 39}{space 2} 14419.25{col 50}{space 1}    1.69{col 59}{space 3}0.091{col 67}{space 4}-3928.107{col 80}{space 3} 52657.22
+{txt}{space 22}23  {c |}{col 27}{res}{space 2} 20709.28{col 39}{space 2} 11639.78{col 50}{space 1}    1.78{col 59}{space 3}0.075{col 67}{space 4}-2129.647{col 80}{space 3} 43548.21
+{txt}{space 22}24  {c |}{col 27}{res}{space 2}-10484.47{col 39}{space 2} 13232.23{col 50}{space 1}   -0.79{col 59}{space 3}0.428{col 67}{space 4}-36448.01{col 80}{space 3} 15479.07
+{txt}{space 22}25  {c |}{col 27}{res}{space 2}-59194.65{col 39}{space 2} 19599.73{col 50}{space 1}   -3.02{col 59}{space 3}0.003{col 67}{space 4}-97652.16{col 80}{space 3}-20737.14
+{txt}{space 22}26  {c |}{col 27}{res}{space 2}-14915.48{col 39}{space 2} 9833.594{col 50}{space 1}   -1.52{col 59}{space 3}0.130{col 67}{space 4}-34210.42{col 80}{space 3} 4379.453
+{txt}{space 22}27  {c |}{col 27}{res}{space 2}-4421.263{col 39}{space 2} 8343.518{col 50}{space 1}   -0.53{col 59}{space 3}0.596{col 67}{space 4}-20792.45{col 80}{space 3} 11949.93
+{txt}{space 22}31  {c |}{col 27}{res}{space 2} 18863.58{col 39}{space 2} 9062.487{col 50}{space 1}    2.08{col 59}{space 3}0.038{col 67}{space 4} 1081.674{col 80}{space 3}  36645.5
+{txt}{space 22}32  {c |}{col 27}{res}{space 2} 16961.55{col 39}{space 2} 18260.04{col 50}{space 1}    0.93{col 59}{space 3}0.353{col 67}{space 4}-18867.29{col 80}{space 3} 52790.39
+{txt}{space 22}33  {c |}{col 27}{res}{space 2} 8919.742{col 39}{space 2} 9592.024{col 50}{space 1}    0.93{col 59}{space 3}0.353{col 67}{space 4}-9901.197{col 80}{space 3} 27740.68
+{txt}{space 22}34  {c |}{col 27}{res}{space 2}-12599.17{col 39}{space 2} 8574.304{col 50}{space 1}   -1.47{col 59}{space 3}0.142{col 67}{space 4} -29423.2{col 80}{space 3} 4224.856
+{txt}{space 22}35  {c |}{col 27}{res}{space 2}-7335.884{col 39}{space 2} 12435.17{col 50}{space 1}   -0.59{col 59}{space 3}0.555{col 67}{space 4}-31735.48{col 80}{space 3} 17063.71
+{txt}{space 22}36  {c |}{col 27}{res}{space 2} 20754.99{col 39}{space 2} 9816.424{col 50}{space 1}    2.11{col 59}{space 3}0.035{col 67}{space 4} 1493.746{col 80}{space 3} 40016.24
+{txt}{space 22}37  {c |}{col 27}{res}{space 2}-46396.38{col 39}{space 2} 17863.83{col 50}{space 1}   -2.60{col 59}{space 3}0.010{col 67}{space 4}-81447.81{col 80}{space 3}-11344.95
+{txt}{space 22}38  {c |}{col 27}{res}{space 2} 9312.393{col 39}{space 2} 6435.188{col 50}{space 1}    1.45{col 59}{space 3}0.148{col 67}{space 4}-3314.378{col 80}{space 3} 21939.16
+{txt}{space 22}39  {c |}{col 27}{res}{space 2} -18357.3{col 39}{space 2} 16771.64{col 50}{space 1}   -1.09{col 59}{space 3}0.274{col 67}{space 4}-51265.68{col 80}{space 3} 14551.07
+{txt}{space 22}40  {c |}{col 27}{res}{space 2}-54073.45{col 39}{space 2} 10984.84{col 50}{space 1}   -4.92{col 59}{space 3}0.000{col 67}{space 4} -75627.3{col 80}{space 3} -32519.6
+{txt}{space 22}41  {c |}{col 27}{res}{space 2}-29276.04{col 39}{space 2} 17497.19{col 50}{space 1}   -1.67{col 59}{space 3}0.095{col 67}{space 4}-63608.06{col 80}{space 3} 5055.979
+{txt}{space 22}42  {c |}{col 27}{res}{space 2} 121539.8{col 39}{space 2} 15725.46{col 50}{space 1}    7.73{col 59}{space 3}0.000{col 67}{space 4} 90684.14{col 80}{space 3} 152395.4
+{txt}{space 22}43  {c |}{col 27}{res}{space 2} 5767.264{col 39}{space 2} 16059.61{col 50}{space 1}    0.36{col 59}{space 3}0.720{col 67}{space 4}-25744.01{col 80}{space 3} 37278.54
+{txt}{space 22}44  {c |}{col 27}{res}{space 2}-2212.465{col 39}{space 2} 8223.548{col 50}{space 1}   -0.27{col 59}{space 3}0.788{col 67}{space 4}-18348.26{col 80}{space 3} 13923.33
+{txt}{space 22}46  {c |}{col 27}{res}{space 2}-11670.89{col 39}{space 2} 8323.232{col 50}{space 1}   -1.40{col 59}{space 3}0.161{col 67}{space 4}-28002.27{col 80}{space 3} 4660.497
+{txt}{space 22}47  {c |}{col 27}{res}{space 2}-120.8592{col 39}{space 2} 9134.476{col 50}{space 1}   -0.01{col 59}{space 3}0.989{col 67}{space 4}-18044.02{col 80}{space 3} 17802.31
+{txt}{space 22}48  {c |}{col 27}{res}{space 2}-6049.829{col 39}{space 2} 18698.83{col 50}{space 1}   -0.32{col 59}{space 3}0.746{col 67}{space 4}-42739.63{col 80}{space 3} 30639.98
+{txt}{space 22}50  {c |}{col 27}{res}{space 2} -20337.7{col 39}{space 2} 13972.99{col 50}{space 1}   -1.46{col 59}{space 3}0.146{col 67}{space 4}-47754.73{col 80}{space 3} 7079.319
+{txt}{space 25} {c |}
+{space 20}_cons {c |}{col 27}{res}{space 2} 43309.99{col 39}{space 2} 4550.257{col 50}{space 1}    9.52{col 59}{space 3}0.000{col 67}{space 4} 34381.73{col 80}{space 3} 52238.25
+{txt}{hline 26}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+Parente-Santos Silva test for intra-cluster correlation
+         Ho: No intra-cluster correlation
+
+            T{col 17}=  {res}-4.056
+{txt}         P>|T|  =  {res} 0.000
+{txt}
+{com}. 
+. estadd local fe Yes
+
+{txt}added macro:
+                 e(fe) : "{res:Yes}"
+
+{com}. 
+. est sto m6
+{txt}
+{com}. 
+. esttab m4 m5 m6 using SATMathIncRankQuantExp.tex, keep (satmathscore advmathcreditsearned hsdiploma belowbachelors bachelorsabove female bothbioparents white avginc9799thou averageincomepovratio9799 exp) cells(b(star fmt(3)) se(fmt(3) par)) starlevels(* .1 ** .05 *** .01 **** .001) stats(fe r2 N, ///
+> labels("state and cohort FE" "R^2")) legend nolabel nonumber title("Quantile Regression Income w/ Exposure") mtitles("25th" "50th" "75th")
+{res}{txt}(output written to {browse  `"SATMathIncRankQuantExp.tex"'})
+
+{com}. 
+. *Run quantile regression at each quantile with controls determined by the lasso methods to examine satmathscore coefficient with total recipients of STEM reform instead of exposure to STEM reform and save output tables
+. qreg2 avginc20172019 satmathscore advmathcreditsearned hsdiploma belowbachelors bachelorsabove female bothbioparents white avginc9799thou averageincomepovratio9799 rec2 i.hscohort i.highschoolstate, cluster(highschoolstate) quantile(.25)
+{res}
+{txt}.25 Quantile regression
+R-squared = {res}.15705704
+{txt}Number of obs = {res}1143
+{txt}Objective function = {res}10001.223
+
+{txt}Standard errors adjusted for {res}41{txt} clusters in highschoolstate
+{res}{txt}{hline 26}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}           avginc20172019{col 27}{c |}      Coef.{col 39}   Std. Err.{col 51}      t{col 59}   P>|t|{col 67}     [95% Con{col 80}f. Interval]
+{hline 26}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 13}satmathscore {c |}{col 27}{res}{space 2} 106.9865{col 39}{space 2}  789.527{col 50}{space 1}    0.14{col 59}{space 3}0.892{col 67}{space 4} -1442.18{col 80}{space 3} 1656.153
+{txt}{space 5}advmathcreditsearned {c |}{col 27}{res}{space 2} 3384.252{col 39}{space 2} 1279.778{col 50}{space 1}    2.64{col 59}{space 3}0.008{col 67}{space 4} 873.1417{col 80}{space 3} 5895.363
+{txt}{space 16}hsdiploma {c |}{col 27}{res}{space 2} 5997.733{col 39}{space 2} 6325.847{col 50}{space 1}    0.95{col 59}{space 3}0.343{col 67}{space 4}-6414.494{col 80}{space 3} 18409.96
+{txt}{space 11}belowbachelors {c |}{col 27}{res}{space 2} 279.3549{col 39}{space 2} 6568.906{col 50}{space 1}    0.04{col 59}{space 3}0.966{col 67}{space 4}-12609.79{col 80}{space 3}  13168.5
+{txt}{space 11}bachelorsabove {c |}{col 27}{res}{space 2} 18879.07{col 39}{space 2} 6175.905{col 50}{space 1}    3.06{col 59}{space 3}0.002{col 67}{space 4} 6761.054{col 80}{space 3} 30997.09
+{txt}{space 19}female {c |}{col 27}{res}{space 2}-12543.81{col 39}{space 2} 1528.676{col 50}{space 1}   -8.21{col 59}{space 3}0.000{col 67}{space 4} -15543.3{col 80}{space 3} -9544.33
+{txt}{space 11}bothbioparents {c |}{col 27}{res}{space 2} 1694.132{col 39}{space 2} 1779.276{col 50}{space 1}    0.95{col 59}{space 3}0.341{col 67}{space 4}-1797.066{col 80}{space 3}  5185.33
+{txt}{space 20}white {c |}{col 27}{res}{space 2}-1538.517{col 39}{space 2} 2249.351{col 50}{space 1}   -0.68{col 59}{space 3}0.494{col 67}{space 4} -5952.07{col 80}{space 3} 2875.036
+{txt}{space 11}avginc9799thou {c |}{col 27}{res}{space 2} 180.2663{col 39}{space 2} 114.0338{col 50}{space 1}    1.58{col 59}{space 3}0.114{col 67}{space 4}-43.48464{col 80}{space 3} 404.0172
+{txt}averageincomepovratio9799 {c |}{col 27}{res}{space 2} -1996.34{col 39}{space 2} 1645.152{col 50}{space 1}   -1.21{col 59}{space 3}0.225{col 67}{space 4}-5224.366{col 80}{space 3} 1231.686
+{txt}{space 21}rec2 {c |}{col 27}{res}{space 2}  242.385{col 39}{space 2} 95.51402{col 50}{space 1}    2.54{col 59}{space 3}0.011{col 67}{space 4} 54.97266{col 80}{space 3} 429.7973
+{txt}{space 25} {c |}
+{space 17}hscohort {c |}
+{space 20}1995  {c |}{col 27}{res}{space 2} 1956.871{col 39}{space 2} 2495.841{col 50}{space 1}    0.78{col 59}{space 3}0.433{col 67}{space 4} -2940.33{col 80}{space 3} 6854.073
+{txt}{space 20}1996  {c |}{col 27}{res}{space 2}-2398.135{col 39}{space 2} 2174.179{col 50}{space 1}   -1.10{col 59}{space 3}0.270{col 67}{space 4} -6664.19{col 80}{space 3} 1867.919
+{txt}{space 20}1997  {c |}{col 27}{res}{space 2}-1870.347{col 39}{space 2}  3336.61{col 50}{space 1}   -0.56{col 59}{space 3}0.575{col 67}{space 4}-8417.259{col 80}{space 3} 4676.564
+{txt}{space 20}1998  {c |}{col 27}{res}{space 2}-3632.316{col 39}{space 2} 2578.647{col 50}{space 1}   -1.41{col 59}{space 3}0.159{col 67}{space 4}-8691.994{col 80}{space 3} 1427.363
+{txt}{space 25} {c |}
+{space 10}highschoolstate {c |}
+{space 23}2  {c |}{col 27}{res}{space 2} 22463.39{col 39}{space 2} 7515.602{col 50}{space 1}    2.99{col 59}{space 3}0.003{col 67}{space 4} 7716.689{col 80}{space 3} 37210.09
+{txt}{space 23}3  {c |}{col 27}{res}{space 2} 5089.481{col 39}{space 2} 7474.852{col 50}{space 1}    0.68{col 59}{space 3}0.496{col 67}{space 4} -9577.26{col 80}{space 3} 19756.22
+{txt}{space 23}4  {c |}{col 27}{res}{space 2}-6485.397{col 39}{space 2} 8944.113{col 50}{space 1}   -0.73{col 59}{space 3}0.469{col 67}{space 4}-24035.04{col 80}{space 3} 11064.25
+{txt}{space 23}5  {c |}{col 27}{res}{space 2} 3611.685{col 39}{space 2} 7312.339{col 50}{space 1}    0.49{col 59}{space 3}0.621{col 67}{space 4}-10736.18{col 80}{space 3} 17959.55
+{txt}{space 23}6  {c |}{col 27}{res}{space 2}-5215.432{col 39}{space 2} 8002.207{col 50}{space 1}   -0.65{col 59}{space 3}0.515{col 67}{space 4}-20916.92{col 80}{space 3} 10486.06
+{txt}{space 23}7  {c |}{col 27}{res}{space 2}  12385.3{col 39}{space 2} 7135.862{col 50}{space 1}    1.74{col 59}{space 3}0.083{col 67}{space 4}-1616.298{col 80}{space 3} 26386.89
+{txt}{space 23}8  {c |}{col 27}{res}{space 2} 11543.54{col 39}{space 2} 7229.644{col 50}{space 1}    1.60{col 59}{space 3}0.111{col 67}{space 4}-2642.066{col 80}{space 3} 25729.15
+{txt}{space 23}9  {c |}{col 27}{res}{space 2} 894.5976{col 39}{space 2} 13408.07{col 50}{space 1}    0.07{col 59}{space 3}0.947{col 67}{space 4}-25413.98{col 80}{space 3} 27203.17
+{txt}{space 22}10  {c |}{col 27}{res}{space 2} 3011.354{col 39}{space 2} 7626.653{col 50}{space 1}    0.39{col 59}{space 3}0.693{col 67}{space 4}-11953.24{col 80}{space 3} 17975.95
+{txt}{space 22}11  {c |}{col 27}{res}{space 2}-2902.695{col 39}{space 2} 6952.401{col 50}{space 1}   -0.42{col 59}{space 3}0.676{col 67}{space 4}-16544.31{col 80}{space 3} 10738.92
+{txt}{space 22}14  {c |}{col 27}{res}{space 2}-6985.559{col 39}{space 2} 7483.541{col 50}{space 1}   -0.93{col 59}{space 3}0.351{col 67}{space 4}-21669.35{col 80}{space 3} 7698.231
+{txt}{space 22}15  {c |}{col 27}{res}{space 2} 7203.284{col 39}{space 2}  7402.82{col 50}{space 1}    0.97{col 59}{space 3}0.331{col 67}{space 4} -7322.12{col 80}{space 3} 21728.69
+{txt}{space 22}17  {c |}{col 27}{res}{space 2} 31073.24{col 39}{space 2} 16902.69{col 50}{space 1}    1.84{col 59}{space 3}0.066{col 67}{space 4} -2092.29{col 80}{space 3} 64238.77
+{txt}{space 22}18  {c |}{col 27}{res}{space 2}-14010.56{col 39}{space 2} 8483.436{col 50}{space 1}   -1.65{col 59}{space 3}0.099{col 67}{space 4}-30656.29{col 80}{space 3} 2635.167
+{txt}{space 22}19  {c |}{col 27}{res}{space 2}-13043.34{col 39}{space 2} 8364.796{col 50}{space 1}   -1.56{col 59}{space 3}0.119{col 67}{space 4}-29456.28{col 80}{space 3} 3369.602
+{txt}{space 22}21  {c |}{col 27}{res}{space 2} 8959.219{col 39}{space 2} 7350.611{col 50}{space 1}    1.22{col 59}{space 3}0.223{col 67}{space 4}-5463.744{col 80}{space 3} 23382.18
+{txt}{space 22}22  {c |}{col 27}{res}{space 2}-8270.742{col 39}{space 2} 8246.708{col 50}{space 1}   -1.00{col 59}{space 3}0.316{col 67}{space 4}-24451.98{col 80}{space 3} 7910.493
+{txt}{space 22}23  {c |}{col 27}{res}{space 2} 12958.43{col 39}{space 2} 7155.696{col 50}{space 1}    1.81{col 59}{space 3}0.070{col 67}{space 4}-1082.077{col 80}{space 3} 26998.95
+{txt}{space 22}24  {c |}{col 27}{res}{space 2}-11689.13{col 39}{space 2} 10600.51{col 50}{space 1}   -1.10{col 59}{space 3}0.270{col 67}{space 4}-32488.88{col 80}{space 3} 9110.605
+{txt}{space 22}25  {c |}{col 27}{res}{space 2}-35086.17{col 39}{space 2} 10830.09{col 50}{space 1}   -3.24{col 59}{space 3}0.001{col 67}{space 4}-56336.37{col 80}{space 3}-13835.96
+{txt}{space 22}26  {c |}{col 27}{res}{space 2} 12551.31{col 39}{space 2} 9471.487{col 50}{space 1}    1.33{col 59}{space 3}0.185{col 67}{space 4}-6033.122{col 80}{space 3} 31135.74
+{txt}{space 22}27  {c |}{col 27}{res}{space 2} 29483.66{col 39}{space 2}  9301.43{col 50}{space 1}    3.17{col 59}{space 3}0.002{col 67}{space 4} 11232.91{col 80}{space 3} 47734.41
+{txt}{space 22}31  {c |}{col 27}{res}{space 2} 14985.39{col 39}{space 2}  7434.53{col 50}{space 1}    2.02{col 59}{space 3}0.044{col 67}{space 4} 397.7684{col 80}{space 3} 29573.02
+{txt}{space 22}32  {c |}{col 27}{res}{space 2} 56982.12{col 39}{space 2} 16188.12{col 50}{space 1}    3.52{col 59}{space 3}0.000{col 67}{space 4} 25218.69{col 80}{space 3} 88745.55
+{txt}{space 22}33  {c |}{col 27}{res}{space 2} 8897.636{col 39}{space 2} 7321.804{col 50}{space 1}    1.22{col 59}{space 3}0.225{col 67}{space 4}-5468.803{col 80}{space 3} 23264.08
+{txt}{space 22}34  {c |}{col 27}{res}{space 2} 5964.049{col 39}{space 2} 7209.665{col 50}{space 1}    0.83{col 59}{space 3}0.408{col 67}{space 4}-8182.357{col 80}{space 3} 20110.46
+{txt}{space 22}35  {c |}{col 27}{res}{space 2} 6997.529{col 39}{space 2} 10202.68{col 50}{space 1}    0.69{col 59}{space 3}0.493{col 67}{space 4}-13021.61{col 80}{space 3} 27016.66
+{txt}{space 22}36  {c |}{col 27}{res}{space 2} 38102.54{col 39}{space 2} 8879.981{col 50}{space 1}    4.29{col 59}{space 3}0.000{col 67}{space 4} 20678.73{col 80}{space 3} 55526.35
+{txt}{space 22}37  {c |}{col 27}{res}{space 2}-549.7038{col 39}{space 2} 8025.891{col 50}{space 1}   -0.07{col 59}{space 3}0.945{col 67}{space 4}-16297.66{col 80}{space 3} 15198.26
+{txt}{space 22}38  {c |}{col 27}{res}{space 2} 7107.504{col 39}{space 2} 7726.161{col 50}{space 1}    0.92{col 59}{space 3}0.358{col 67}{space 4}-8052.342{col 80}{space 3} 22267.35
+{txt}{space 22}39  {c |}{col 27}{res}{space 2} 7338.903{col 39}{space 2} 7261.914{col 50}{space 1}    1.01{col 59}{space 3}0.312{col 67}{space 4}-6910.024{col 80}{space 3} 21587.83
+{txt}{space 22}40  {c |}{col 27}{res}{space 2}-2679.117{col 39}{space 2} 13686.62{col 50}{space 1}   -0.20{col 59}{space 3}0.845{col 67}{space 4}-29534.25{col 80}{space 3} 24176.02
+{txt}{space 22}41  {c |}{col 27}{res}{space 2}-1594.029{col 39}{space 2} 7704.632{col 50}{space 1}   -0.21{col 59}{space 3}0.836{col 67}{space 4}-16711.63{col 80}{space 3} 13523.57
+{txt}{space 22}42  {c |}{col 27}{res}{space 2} 5960.258{col 39}{space 2} 9102.265{col 50}{space 1}    0.65{col 59}{space 3}0.513{col 67}{space 4} -11899.7{col 80}{space 3} 23820.22
+{txt}{space 22}43  {c |}{col 27}{res}{space 2} 12280.41{col 39}{space 2}  10816.5{col 50}{space 1}    1.14{col 59}{space 3}0.256{col 67}{space 4}-8943.129{col 80}{space 3} 33503.95
+{txt}{space 22}44  {c |}{col 27}{res}{space 2} 9732.776{col 39}{space 2} 7244.565{col 50}{space 1}    1.34{col 59}{space 3}0.179{col 67}{space 4}-4482.109{col 80}{space 3} 23947.66
+{txt}{space 22}46  {c |}{col 27}{res}{space 2} 6756.715{col 39}{space 2} 7508.686{col 50}{space 1}    0.90{col 59}{space 3}0.368{col 67}{space 4}-7976.413{col 80}{space 3} 21489.84
+{txt}{space 22}47  {c |}{col 27}{res}{space 2} 380.2927{col 39}{space 2} 7220.199{col 50}{space 1}    0.05{col 59}{space 3}0.958{col 67}{space 4}-13786.78{col 80}{space 3} 14547.37
+{txt}{space 22}48  {c |}{col 27}{res}{space 2}  8199.38{col 39}{space 2} 7405.609{col 50}{space 1}    1.11{col 59}{space 3}0.268{col 67}{space 4}-6331.497{col 80}{space 3} 22730.26
+{txt}{space 22}50  {c |}{col 27}{res}{space 2}-12905.95{col 39}{space 2} 10235.93{col 50}{space 1}   -1.26{col 59}{space 3}0.208{col 67}{space 4}-32990.32{col 80}{space 3} 7178.426
+{txt}{space 25} {c |}
+{space 20}_cons {c |}{col 27}{res}{space 2} 15628.01{col 39}{space 2} 9202.516{col 50}{space 1}    1.70{col 59}{space 3}0.090{col 67}{space 4}-2428.659{col 80}{space 3} 33684.68
+{txt}{hline 26}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+Parente-Santos Silva test for intra-cluster correlation
+         Ho: No intra-cluster correlation
+
+            T{col 17}=  {res}-2.562
+{txt}         P>|T|  =  {res} 0.010
+{txt}
+{com}. 
+. estadd local fe Yes
+
+{txt}added macro:
+                 e(fe) : "{res:Yes}"
+
+{com}. 
+. est sto m7
+{txt}
+{com}.  
+. qreg2 avginc20172019 satmathscore advmathcreditsearned hsdiploma belowbachelors bachelorsabove female bothbioparents white avginc9799thou averageincomepovratio9799 rec2 i.hscohort i.highschoolstate, cluster(highschoolstate) quantile(.50)
+{res}
+{txt}Median regression
+R-squared = {res}.18424222
+{txt}Number of obs = {res}1143
+{txt}Objective function = {res}14831.033
+
+{txt}Standard errors adjusted for {res}41{txt} clusters in highschoolstate
+{res}{txt}{hline 26}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}           avginc20172019{col 27}{c |}      Coef.{col 39}   Std. Err.{col 51}      t{col 59}   P>|t|{col 67}     [95% Con{col 80}f. Interval]
+{hline 26}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 13}satmathscore {c |}{col 27}{res}{space 2}    158.4{col 39}{space 2} 980.7504{col 50}{space 1}    0.16{col 59}{space 3}0.872{col 67}{space 4}-1765.974{col 80}{space 3} 2082.774
+{txt}{space 5}advmathcreditsearned {c |}{col 27}{res}{space 2} 3874.807{col 39}{space 2} 1211.896{col 50}{space 1}    3.20{col 59}{space 3}0.001{col 67}{space 4} 1496.892{col 80}{space 3} 6252.723
+{txt}{space 16}hsdiploma {c |}{col 27}{res}{space 2}  5659.54{col 39}{space 2} 5845.241{col 50}{space 1}    0.97{col 59}{space 3}0.333{col 67}{space 4}-5809.669{col 80}{space 3} 17128.75
+{txt}{space 11}belowbachelors {c |}{col 27}{res}{space 2} 7994.356{col 39}{space 2} 6221.899{col 50}{space 1}    1.28{col 59}{space 3}0.199{col 67}{space 4} -4213.91{col 80}{space 3} 20202.62
+{txt}{space 11}bachelorsabove {c |}{col 27}{res}{space 2} 26466.17{col 39}{space 2} 6483.707{col 50}{space 1}    4.08{col 59}{space 3}0.000{col 67}{space 4}  13744.2{col 80}{space 3} 39188.15
+{txt}{space 19}female {c |}{col 27}{res}{space 2}-15975.94{col 39}{space 2} 1626.607{col 50}{space 1}   -9.82{col 59}{space 3}0.000{col 67}{space 4}-19167.58{col 80}{space 3}-12784.31
+{txt}{space 11}bothbioparents {c |}{col 27}{res}{space 2}  1528.66{col 39}{space 2} 1547.946{col 50}{space 1}    0.99{col 59}{space 3}0.324{col 67}{space 4}-1508.635{col 80}{space 3} 4565.955
+{txt}{space 20}white {c |}{col 27}{res}{space 2} 528.9095{col 39}{space 2} 3005.774{col 50}{space 1}    0.18{col 59}{space 3}0.860{col 67}{space 4}-5368.854{col 80}{space 3} 6426.673
+{txt}{space 11}avginc9799thou {c |}{col 27}{res}{space 2} 198.8557{col 39}{space 2}  141.092{col 50}{space 1}    1.41{col 59}{space 3}0.159{col 67}{space 4}-77.98717{col 80}{space 3} 475.6985
+{txt}averageincomepovratio9799 {c |}{col 27}{res}{space 2}-1425.213{col 39}{space 2} 2181.081{col 50}{space 1}   -0.65{col 59}{space 3}0.514{col 67}{space 4}-5704.809{col 80}{space 3} 2854.383
+{txt}{space 21}rec2 {c |}{col 27}{res}{space 2} 344.3763{col 39}{space 2} 84.04196{col 50}{space 1}    4.10{col 59}{space 3}0.000{col 67}{space 4} 179.4738{col 80}{space 3} 509.2788
+{txt}{space 25} {c |}
+{space 17}hscohort {c |}
+{space 20}1995  {c |}{col 27}{res}{space 2} 4160.896{col 39}{space 2} 4050.758{col 50}{space 1}    1.03{col 59}{space 3}0.305{col 67}{space 4}-3787.277{col 80}{space 3} 12109.07
+{txt}{space 20}1996  {c |}{col 27}{res}{space 2}-3514.555{col 39}{space 2} 2499.269{col 50}{space 1}   -1.41{col 59}{space 3}0.160{col 67}{space 4}-8418.484{col 80}{space 3} 1389.373
+{txt}{space 20}1997  {c |}{col 27}{res}{space 2} 3031.039{col 39}{space 2} 3003.376{col 50}{space 1}    1.01{col 59}{space 3}0.313{col 67}{space 4} -2862.02{col 80}{space 3} 8924.098
+{txt}{space 20}1998  {c |}{col 27}{res}{space 2}-3072.945{col 39}{space 2} 2871.301{col 50}{space 1}   -1.07{col 59}{space 3}0.285{col 67}{space 4}-8706.853{col 80}{space 3} 2560.963
+{txt}{space 25} {c |}
+{space 10}highschoolstate {c |}
+{space 23}2  {c |}{col 27}{res}{space 2} 7485.077{col 39}{space 2} 4846.271{col 50}{space 1}    1.54{col 59}{space 3}0.123{col 67}{space 4}-2024.009{col 80}{space 3} 16994.16
+{txt}{space 23}3  {c |}{col 27}{res}{space 2}-9169.223{col 39}{space 2} 4191.244{col 50}{space 1}   -2.19{col 59}{space 3}0.029{col 67}{space 4}-17393.05{col 80}{space 3}-945.3946
+{txt}{space 23}4  {c |}{col 27}{res}{space 2}-15245.07{col 39}{space 2} 6057.088{col 50}{space 1}   -2.52{col 59}{space 3}0.012{col 67}{space 4}-27129.95{col 80}{space 3}-3360.185
+{txt}{space 23}5  {c |}{col 27}{res}{space 2}-417.0312{col 39}{space 2} 3951.653{col 50}{space 1}   -0.11{col 59}{space 3}0.916{col 67}{space 4}-8170.747{col 80}{space 3} 7336.684
+{txt}{space 23}6  {c |}{col 27}{res}{space 2}-457.4829{col 39}{space 2} 4379.872{col 50}{space 1}   -0.10{col 59}{space 3}0.917{col 67}{space 4}-9051.426{col 80}{space 3}  8136.46
+{txt}{space 23}7  {c |}{col 27}{res}{space 2} 12377.16{col 39}{space 2} 4342.747{col 50}{space 1}    2.85{col 59}{space 3}0.004{col 67}{space 4}  3856.06{col 80}{space 3} 20898.26
+{txt}{space 23}8  {c |}{col 27}{res}{space 2} 5266.726{col 39}{space 2} 4811.537{col 50}{space 1}    1.09{col 59}{space 3}0.274{col 67}{space 4}-4174.206{col 80}{space 3} 14707.66
+{txt}{space 23}9  {c |}{col 27}{res}{space 2}-33397.95{col 39}{space 2} 9656.877{col 50}{space 1}   -3.46{col 59}{space 3}0.001{col 67}{space 4}-52346.14{col 80}{space 3}-14449.75
+{txt}{space 22}10  {c |}{col 27}{res}{space 2} 4.210729{col 39}{space 2} 3833.016{col 50}{space 1}    0.00{col 59}{space 3}0.999{col 67}{space 4}-7516.722{col 80}{space 3} 7525.144
+{txt}{space 22}11  {c |}{col 27}{res}{space 2}-11406.16{col 39}{space 2}   3763.4{col 50}{space 1}   -3.03{col 59}{space 3}0.002{col 67}{space 4}-18790.49{col 80}{space 3}-4021.824
+{txt}{space 22}14  {c |}{col 27}{res}{space 2} 6648.034{col 39}{space 2}  4451.68{col 50}{space 1}    1.49{col 59}{space 3}0.136{col 67}{space 4}-2086.807{col 80}{space 3} 15382.88
+{txt}{space 22}15  {c |}{col 27}{res}{space 2}-1133.138{col 39}{space 2} 3756.504{col 50}{space 1}   -0.30{col 59}{space 3}0.763{col 67}{space 4}-8503.944{col 80}{space 3} 6237.667
+{txt}{space 22}17  {c |}{col 27}{res}{space 2} 7971.296{col 39}{space 2} 5429.797{col 50}{space 1}    1.47{col 59}{space 3}0.142{col 67}{space 4}-2682.751{col 80}{space 3} 18625.34
+{txt}{space 22}18  {c |}{col 27}{res}{space 2}-23844.69{col 39}{space 2} 6315.834{col 50}{space 1}   -3.78{col 59}{space 3}0.000{col 67}{space 4}-36237.27{col 80}{space 3}-11452.11
+{txt}{space 22}19  {c |}{col 27}{res}{space 2}-649.8016{col 39}{space 2} 9500.145{col 50}{space 1}   -0.07{col 59}{space 3}0.945{col 67}{space 4}-19290.46{col 80}{space 3} 17990.86
+{txt}{space 22}21  {c |}{col 27}{res}{space 2} 6954.033{col 39}{space 2}  4493.49{col 50}{space 1}    1.55{col 59}{space 3}0.122{col 67}{space 4}-1862.846{col 80}{space 3} 15770.91
+{txt}{space 22}22  {c |}{col 27}{res}{space 2}  9557.37{col 39}{space 2} 4286.034{col 50}{space 1}    2.23{col 59}{space 3}0.026{col 67}{space 4} 1147.551{col 80}{space 3} 17967.19
+{txt}{space 22}23  {c |}{col 27}{res}{space 2}-4522.814{col 39}{space 2} 3819.265{col 50}{space 1}   -1.18{col 59}{space 3}0.237{col 67}{space 4}-12016.76{col 80}{space 3} 2971.136
+{txt}{space 22}24  {c |}{col 27}{res}{space 2}-13825.35{col 39}{space 2}  7909.41{col 50}{space 1}   -1.75{col 59}{space 3}0.081{col 67}{space 4}-29344.75{col 80}{space 3} 1694.059
+{txt}{space 22}25  {c |}{col 27}{res}{space 2} -21261.4{col 39}{space 2} 18452.52{col 50}{space 1}   -1.15{col 59}{space 3}0.249{col 67}{space 4}-57467.92{col 80}{space 3} 14945.13
+{txt}{space 22}26  {c |}{col 27}{res}{space 2}-7284.654{col 39}{space 2} 5861.657{col 50}{space 1}   -1.24{col 59}{space 3}0.214{col 67}{space 4}-18786.07{col 80}{space 3} 4216.765
+{txt}{space 22}27  {c |}{col 27}{res}{space 2} 7885.295{col 39}{space 2} 5980.977{col 50}{space 1}    1.32{col 59}{space 3}0.188{col 67}{space 4}-3850.247{col 80}{space 3} 19620.84
+{txt}{space 22}31  {c |}{col 27}{res}{space 2} 4641.371{col 39}{space 2} 3596.296{col 50}{space 1}    1.29{col 59}{space 3}0.197{col 67}{space 4}-2415.082{col 80}{space 3} 11697.82
+{txt}{space 22}32  {c |}{col 27}{res}{space 2} 59500.17{col 39}{space 2} 17805.96{col 50}{space 1}    3.34{col 59}{space 3}0.001{col 67}{space 4} 24562.29{col 80}{space 3} 94438.04
+{txt}{space 22}33  {c |}{col 27}{res}{space 2} 1261.243{col 39}{space 2} 3908.774{col 50}{space 1}    0.32{col 59}{space 3}0.747{col 67}{space 4}-6408.337{col 80}{space 3} 8930.822
+{txt}{space 22}34  {c |}{col 27}{res}{space 2}-4265.937{col 39}{space 2} 4000.598{col 50}{space 1}   -1.07{col 59}{space 3}0.287{col 67}{space 4}-12115.69{col 80}{space 3} 3583.816
+{txt}{space 22}35  {c |}{col 27}{res}{space 2} 18730.01{col 39}{space 2} 19239.76{col 50}{space 1}    0.97{col 59}{space 3}0.331{col 67}{space 4} -19021.2{col 80}{space 3} 56481.21
+{txt}{space 22}36  {c |}{col 27}{res}{space 2} 25559.59{col 39}{space 2} 5131.135{col 50}{space 1}    4.98{col 59}{space 3}0.000{col 67}{space 4} 15491.56{col 80}{space 3} 35627.62
+{txt}{space 22}37  {c |}{col 27}{res}{space 2}-15227.89{col 39}{space 2} 4342.314{col 50}{space 1}   -3.51{col 59}{space 3}0.000{col 67}{space 4}-23748.14{col 80}{space 3}-6707.639
+{txt}{space 22}38  {c |}{col 27}{res}{space 2} 13834.27{col 39}{space 2} 6714.556{col 50}{space 1}    2.06{col 59}{space 3}0.040{col 67}{space 4} 659.3422{col 80}{space 3}  27009.2
+{txt}{space 22}39  {c |}{col 27}{res}{space 2}-1918.764{col 39}{space 2} 3909.517{col 50}{space 1}   -0.49{col 59}{space 3}0.624{col 67}{space 4}-9589.803{col 80}{space 3} 5752.275
+{txt}{space 22}40  {c |}{col 27}{res}{space 2}-26814.99{col 39}{space 2} 10404.17{col 50}{space 1}   -2.58{col 59}{space 3}0.010{col 67}{space 4}-47229.47{col 80}{space 3}-6400.504
+{txt}{space 22}41  {c |}{col 27}{res}{space 2}-8897.037{col 39}{space 2} 4752.769{col 50}{space 1}   -1.87{col 59}{space 3}0.061{col 67}{space 4}-18222.66{col 80}{space 3} 428.5842
+{txt}{space 22}42  {c |}{col 27}{res}{space 2} 27461.68{col 39}{space 2} 10337.91{col 50}{space 1}    2.66{col 59}{space 3}0.008{col 67}{space 4} 7177.191{col 80}{space 3} 47746.16
+{txt}{space 22}43  {c |}{col 27}{res}{space 2}  40208.1{col 39}{space 2} 9365.726{col 50}{space 1}    4.29{col 59}{space 3}0.000{col 67}{space 4} 21831.19{col 80}{space 3} 58585.01
+{txt}{space 22}44  {c |}{col 27}{res}{space 2}-10.59926{col 39}{space 2} 3891.675{col 50}{space 1}   -0.00{col 59}{space 3}0.998{col 67}{space 4}-7646.629{col 80}{space 3}  7625.43
+{txt}{space 22}46  {c |}{col 27}{res}{space 2}-9661.381{col 39}{space 2} 4119.763{col 50}{space 1}   -2.35{col 59}{space 3}0.019{col 67}{space 4}-17744.95{col 80}{space 3} -1577.81
+{txt}{space 22}47  {c |}{col 27}{res}{space 2} 747.9482{col 39}{space 2} 4035.397{col 50}{space 1}    0.19{col 59}{space 3}0.853{col 67}{space 4}-7170.085{col 80}{space 3} 8665.981
+{txt}{space 22}48  {c |}{col 27}{res}{space 2} 1286.481{col 39}{space 2} 4832.904{col 50}{space 1}    0.27{col 59}{space 3}0.790{col 67}{space 4}-8196.376{col 80}{space 3} 10769.34
+{txt}{space 22}50  {c |}{col 27}{res}{space 2} 10107.33{col 39}{space 2} 17907.43{col 50}{space 1}    0.56{col 59}{space 3}0.573{col 67}{space 4}-25029.64{col 80}{space 3}  45244.3
+{txt}{space 25} {c |}
+{space 20}_cons {c |}{col 27}{res}{space 2}  27714.7{col 39}{space 2} 3150.937{col 50}{space 1}    8.80{col 59}{space 3}0.000{col 67}{space 4} 21532.11{col 80}{space 3} 33897.29
+{txt}{hline 26}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+Parente-Santos Silva test for intra-cluster correlation
+         Ho: No intra-cluster correlation
+
+            T{col 17}=  {res}-3.849
+{txt}         P>|T|  =  {res} 0.000
+{txt}
+{com}. 
+. estadd local fe Yes
+
+{txt}added macro:
+                 e(fe) : "{res:Yes}"
+
+{com}. 
+. est sto m8
+{txt}
+{com}. 
+. qreg2 avginc20172019 satmathscore advmathcreditsearned hsdiploma belowbachelors bachelorsabove female bothbioparents white avginc9799thou averageincomepovratio9799 rec2 i.hscohort i.highschoolstate, cluster(highschoolstate) quantile(.75)
+{res}
+{txt}.75 Quantile regression
+R-squared = {res}.18817958
+{txt}Number of obs = {res}1143
+{txt}Objective function = {res}14680.56
+
+{txt}Standard errors adjusted for {res}41{txt} clusters in highschoolstate
+{res}{txt}{hline 26}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}           avginc20172019{col 27}{c |}      Coef.{col 39}   Std. Err.{col 51}      t{col 59}   P>|t|{col 67}     [95% Con{col 80}f. Interval]
+{hline 26}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 13}satmathscore {c |}{col 27}{res}{space 2} 2454.528{col 39}{space 2} 1695.539{col 50}{space 1}    1.45{col 59}{space 3}0.148{col 67}{space 4}-872.3642{col 80}{space 3} 5781.421
+{txt}{space 5}advmathcreditsearned {c |}{col 27}{res}{space 2} 4528.299{col 39}{space 2} 2081.568{col 50}{space 1}    2.18{col 59}{space 3}0.030{col 67}{space 4} 443.9618{col 80}{space 3} 8612.637
+{txt}{space 16}hsdiploma {c |}{col 27}{res}{space 2} 7077.228{col 39}{space 2} 11483.77{col 50}{space 1}    0.62{col 59}{space 3}0.538{col 67}{space 4} -15455.6{col 80}{space 3} 29610.05
+{txt}{space 11}belowbachelors {c |}{col 27}{res}{space 2} 10222.15{col 39}{space 2}  12871.9{col 50}{space 1}    0.79{col 59}{space 3}0.427{col 67}{space 4}-15034.37{col 80}{space 3} 35478.68
+{txt}{space 11}bachelorsabove {c |}{col 27}{res}{space 2} 27627.13{col 39}{space 2} 12854.66{col 50}{space 1}    2.15{col 59}{space 3}0.032{col 67}{space 4} 2404.433{col 80}{space 3} 52849.82
+{txt}{space 19}female {c |}{col 27}{res}{space 2} -22137.1{col 39}{space 2} 2772.344{col 50}{space 1}   -7.98{col 59}{space 3}0.000{col 67}{space 4}-27576.84{col 80}{space 3}-16697.36
+{txt}{space 11}bothbioparents {c |}{col 27}{res}{space 2}-1225.862{col 39}{space 2} 2817.007{col 50}{space 1}   -0.44{col 59}{space 3}0.664{col 67}{space 4}-6753.238{col 80}{space 3} 4301.515
+{txt}{space 20}white {c |}{col 27}{res}{space 2} 1354.517{col 39}{space 2}  3837.76{col 50}{space 1}    0.35{col 59}{space 3}0.724{col 67}{space 4}-6175.723{col 80}{space 3} 8884.757
+{txt}{space 11}avginc9799thou {c |}{col 27}{res}{space 2} 243.9265{col 39}{space 2} 235.7615{col 50}{space 1}    1.03{col 59}{space 3}0.301{col 67}{space 4}-218.6717{col 80}{space 3} 706.5247
+{txt}averageincomepovratio9799 {c |}{col 27}{res}{space 2}-765.1499{col 39}{space 2} 3756.279{col 50}{space 1}   -0.20{col 59}{space 3}0.839{col 67}{space 4}-8135.512{col 80}{space 3} 6605.213
+{txt}{space 21}rec2 {c |}{col 27}{res}{space 2} 218.8428{col 39}{space 2} 159.2429{col 50}{space 1}    1.37{col 59}{space 3}0.170{col 67}{space 4}-93.61495{col 80}{space 3} 531.3005
+{txt}{space 25} {c |}
+{space 17}hscohort {c |}
+{space 20}1995  {c |}{col 27}{res}{space 2}-2362.143{col 39}{space 2} 4622.957{col 50}{space 1}   -0.51{col 59}{space 3}0.609{col 67}{space 4}-11433.05{col 80}{space 3} 6708.768
+{txt}{space 20}1996  {c |}{col 27}{res}{space 2}-11735.43{col 39}{space 2} 5039.904{col 50}{space 1}   -2.33{col 59}{space 3}0.020{col 67}{space 4}-21624.45{col 80}{space 3}-1846.411
+{txt}{space 20}1997  {c |}{col 27}{res}{space 2}-8233.869{col 39}{space 2} 6455.296{col 50}{space 1}   -1.28{col 59}{space 3}0.202{col 67}{space 4} -20900.1{col 80}{space 3} 4432.356
+{txt}{space 20}1998  {c |}{col 27}{res}{space 2} -10521.7{col 39}{space 2} 4696.677{col 50}{space 1}   -2.24{col 59}{space 3}0.025{col 67}{space 4}-19737.26{col 80}{space 3}-1306.138
+{txt}{space 25} {c |}
+{space 10}highschoolstate {c |}
+{space 23}2  {c |}{col 27}{res}{space 2} 713.8778{col 39}{space 2} 20995.65{col 50}{space 1}    0.03{col 59}{space 3}0.973{col 67}{space 4}-40482.63{col 80}{space 3} 41910.39
+{txt}{space 23}3  {c |}{col 27}{res}{space 2}-10777.09{col 39}{space 2} 19352.52{col 50}{space 1}   -0.56{col 59}{space 3}0.578{col 67}{space 4}-48749.54{col 80}{space 3} 27195.35
+{txt}{space 23}4  {c |}{col 27}{res}{space 2}-45748.97{col 39}{space 2} 18030.34{col 50}{space 1}   -2.54{col 59}{space 3}0.011{col 67}{space 4}-81127.11{col 80}{space 3}-10370.84
+{txt}{space 23}5  {c |}{col 27}{res}{space 2}-11562.93{col 39}{space 2} 19293.32{col 50}{space 1}   -0.60{col 59}{space 3}0.549{col 67}{space 4}-49419.21{col 80}{space 3} 26293.35
+{txt}{space 23}6  {c |}{col 27}{res}{space 2}-20857.94{col 39}{space 2}  19273.5{col 50}{space 1}   -1.08{col 59}{space 3}0.279{col 67}{space 4}-58675.33{col 80}{space 3} 16959.46
+{txt}{space 23}7  {c |}{col 27}{res}{space 2}-9550.231{col 39}{space 2} 18610.68{col 50}{space 1}   -0.51{col 59}{space 3}0.608{col 67}{space 4}-46067.08{col 80}{space 3} 26966.62
+{txt}{space 23}8  {c |}{col 27}{res}{space 2}-18568.47{col 39}{space 2} 18525.29{col 50}{space 1}   -1.00{col 59}{space 3}0.316{col 67}{space 4}-54917.77{col 80}{space 3} 17780.82
+{txt}{space 23}9  {c |}{col 27}{res}{space 2}   -75802{col 39}{space 2}  19818.7{col 50}{space 1}   -3.82{col 59}{space 3}0.000{col 67}{space 4}-114689.2{col 80}{space 3}-36914.85
+{txt}{space 22}10  {c |}{col 27}{res}{space 2}-16463.55{col 39}{space 2} 19586.43{col 50}{space 1}   -0.84{col 59}{space 3}0.401{col 67}{space 4}-54894.96{col 80}{space 3} 21967.86
+{txt}{space 22}11  {c |}{col 27}{res}{space 2}-24382.27{col 39}{space 2} 19480.94{col 50}{space 1}   -1.25{col 59}{space 3}0.211{col 67}{space 4}-62606.69{col 80}{space 3} 13842.15
+{txt}{space 22}14  {c |}{col 27}{res}{space 2} 1634.209{col 39}{space 2} 18725.31{col 50}{space 1}    0.09{col 59}{space 3}0.930{col 67}{space 4}-35107.56{col 80}{space 3} 38375.98
+{txt}{space 22}15  {c |}{col 27}{res}{space 2}-15436.78{col 39}{space 2}  19610.8{col 50}{space 1}   -0.79{col 59}{space 3}0.431{col 67}{space 4}-53916.01{col 80}{space 3} 23042.45
+{txt}{space 22}17  {c |}{col 27}{res}{space 2} 2504.904{col 39}{space 2} 20151.55{col 50}{space 1}    0.12{col 59}{space 3}0.901{col 67}{space 4}-37035.35{col 80}{space 3} 42045.16
+{txt}{space 22}18  {c |}{col 27}{res}{space 2}-21572.01{col 39}{space 2} 22866.88{col 50}{space 1}   -0.94{col 59}{space 3}0.346{col 67}{space 4}-66440.13{col 80}{space 3} 23296.11
+{txt}{space 22}19  {c |}{col 27}{res}{space 2} 29320.01{col 39}{space 2} 21039.38{col 50}{space 1}    1.39{col 59}{space 3}0.164{col 67}{space 4} -11962.3{col 80}{space 3} 70602.32
+{txt}{space 22}21  {c |}{col 27}{res}{space 2}-7848.852{col 39}{space 2} 20789.48{col 50}{space 1}   -0.38{col 59}{space 3}0.706{col 67}{space 4}-48640.83{col 80}{space 3} 32943.13
+{txt}{space 22}22  {c |}{col 27}{res}{space 2} 16287.63{col 39}{space 2}  20076.1{col 50}{space 1}    0.81{col 59}{space 3}0.417{col 67}{space 4}-23104.57{col 80}{space 3} 55679.84
+{txt}{space 22}23  {c |}{col 27}{res}{space 2} 2678.457{col 39}{space 2} 20034.74{col 50}{space 1}    0.13{col 59}{space 3}0.894{col 67}{space 4}-36632.61{col 80}{space 3} 41989.52
+{txt}{space 22}24  {c |}{col 27}{res}{space 2}-28013.44{col 39}{space 2} 22390.27{col 50}{space 1}   -1.25{col 59}{space 3}0.211{col 67}{space 4}-71946.39{col 80}{space 3} 15919.51
+{txt}{space 22}25  {c |}{col 27}{res}{space 2}-61075.68{col 39}{space 2} 20187.12{col 50}{space 1}   -3.03{col 59}{space 3}0.003{col 67}{space 4}-100685.7{col 80}{space 3}-21465.62
+{txt}{space 22}26  {c |}{col 27}{res}{space 2}-32009.08{col 39}{space 2} 19232.37{col 50}{space 1}   -1.66{col 59}{space 3}0.096{col 67}{space 4}-69745.77{col 80}{space 3} 5727.609
+{txt}{space 22}27  {c |}{col 27}{res}{space 2}-22484.66{col 39}{space 2} 18807.96{col 50}{space 1}   -1.20{col 59}{space 3}0.232{col 67}{space 4} -59388.6{col 80}{space 3} 14419.28
+{txt}{space 22}31  {c |}{col 27}{res}{space 2} 2271.556{col 39}{space 2} 18428.88{col 50}{space 1}    0.12{col 59}{space 3}0.902{col 67}{space 4}-33888.58{col 80}{space 3}  38431.7
+{txt}{space 22}32  {c |}{col 27}{res}{space 2} 18974.76{col 39}{space 2} 18787.87{col 50}{space 1}    1.01{col 59}{space 3}0.313{col 67}{space 4}-17889.75{col 80}{space 3} 55839.28
+{txt}{space 22}33  {c |}{col 27}{res}{space 2}-8034.074{col 39}{space 2} 19070.29{col 50}{space 1}   -0.42{col 59}{space 3}0.674{col 67}{space 4}-45452.74{col 80}{space 3} 29384.59
+{txt}{space 22}34  {c |}{col 27}{res}{space 2}-25833.55{col 39}{space 2} 18041.85{col 50}{space 1}   -1.43{col 59}{space 3}0.152{col 67}{space 4}-61234.27{col 80}{space 3} 9567.167
+{txt}{space 22}35  {c |}{col 27}{res}{space 2}-23980.76{col 39}{space 2} 19309.91{col 50}{space 1}   -1.24{col 59}{space 3}0.215{col 67}{space 4}-61869.59{col 80}{space 3} 13908.07
+{txt}{space 22}36  {c |}{col 27}{res}{space 2} 4326.994{col 39}{space 2} 19483.29{col 50}{space 1}    0.22{col 59}{space 3}0.824{col 67}{space 4}-33902.03{col 80}{space 3} 42556.02
+{txt}{space 22}37  {c |}{col 27}{res}{space 2}-42780.93{col 39}{space 2} 20250.67{col 50}{space 1}   -2.11{col 59}{space 3}0.035{col 67}{space 4}-82515.68{col 80}{space 3} -3046.19
+{txt}{space 22}38  {c |}{col 27}{res}{space 2}-7832.726{col 39}{space 2} 18695.09{col 50}{space 1}   -0.42{col 59}{space 3}0.675{col 67}{space 4} -44515.2{col 80}{space 3} 28849.75
+{txt}{space 22}39  {c |}{col 27}{res}{space 2}-17904.99{col 39}{space 2} 18948.16{col 50}{space 1}   -0.94{col 59}{space 3}0.345{col 67}{space 4}-55084.03{col 80}{space 3} 19274.04
+{txt}{space 22}40  {c |}{col 27}{res}{space 2}-71517.37{col 39}{space 2} 20758.46{col 50}{space 1}   -3.45{col 59}{space 3}0.001{col 67}{space 4}-112248.5{col 80}{space 3}-30786.25
+{txt}{space 22}41  {c |}{col 27}{res}{space 2}-28565.87{col 39}{space 2} 19394.55{col 50}{space 1}   -1.47{col 59}{space 3}0.141{col 67}{space 4}-66620.78{col 80}{space 3} 9489.036
+{txt}{space 22}42  {c |}{col 27}{res}{space 2} 104323.5{col 39}{space 2} 22694.79{col 50}{space 1}    4.60{col 59}{space 3}0.000{col 67}{space 4} 59793.07{col 80}{space 3}   148854
+{txt}{space 22}43  {c |}{col 27}{res}{space 2} 9029.104{col 39}{space 2} 18337.88{col 50}{space 1}    0.49{col 59}{space 3}0.623{col 67}{space 4}-26952.47{col 80}{space 3} 45010.68
+{txt}{space 22}44  {c |}{col 27}{res}{space 2}-18675.87{col 39}{space 2} 18520.05{col 50}{space 1}   -1.01{col 59}{space 3}0.313{col 67}{space 4} -55014.9{col 80}{space 3} 17663.15
+{txt}{space 22}46  {c |}{col 27}{res}{space 2}-26330.28{col 39}{space 2} 19475.85{col 50}{space 1}   -1.35{col 59}{space 3}0.177{col 67}{space 4}-64544.72{col 80}{space 3} 11884.16
+{txt}{space 22}47  {c |}{col 27}{res}{space 2}-16952.96{col 39}{space 2} 18336.18{col 50}{space 1}   -0.92{col 59}{space 3}0.355{col 67}{space 4} -52931.2{col 80}{space 3} 19025.29
+{txt}{space 22}48  {c |}{col 27}{res}{space 2}-4323.483{col 39}{space 2}  19939.5{col 50}{space 1}   -0.22{col 59}{space 3}0.828{col 67}{space 4}-43447.66{col 80}{space 3}  34800.7
+{txt}{space 22}50  {c |}{col 27}{res}{space 2}-34369.23{col 39}{space 2} 20437.78{col 50}{space 1}   -1.68{col 59}{space 3}0.093{col 67}{space 4}-74471.11{col 80}{space 3} 5732.658
+{txt}{space 25} {c |}
+{space 20}_cons {c |}{col 27}{res}{space 2}  59040.2{col 39}{space 2} 23272.86{col 50}{space 1}    2.54{col 59}{space 3}0.011{col 67}{space 4} 13375.47{col 80}{space 3} 104704.9
+{txt}{hline 26}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+Parente-Santos Silva test for intra-cluster correlation
+         Ho: No intra-cluster correlation
+
+            T{col 17}=  {res}-4.083
+{txt}         P>|T|  =  {res} 0.000
+{txt}
+{com}. 
+. estadd local fe Yes
+
+{txt}added macro:
+                 e(fe) : "{res:Yes}"
+
+{com}. 
+. est sto m9
+{txt}
+{com}. 
+. esttab m7 m8 m9 using SATMathIncRankQuantRec.tex, keep (satmathscore advmathcreditsearned hsdiploma belowbachelors bachelorsabove female bothbioparents white avginc9799thou averageincomepovratio9799 rec2) cells(b(star fmt(3)) se(fmt(3) par)) starlevels(* .1 ** .05 *** .01 **** .001) stats(fe r2 N, ///
+> labels("state and cohort FE" "R^2")) legend nolabel nonumber title("Quantile Regression Income w/ Recipients") mtitles("25th" "50th" "75th")
+{res}{txt}(output written to {browse  `"SATMathIncRankQuantRec.tex"'})
+
+{com}. 
+. *Run quantile regression at each quantile with controls determined by the lasso methods to examine satmathscore coefficient with total expenditures on STEM reform instead of exposure to STEM reform and save output tables
+. qreg2 avginc20172019 satmathscore advmathcreditsearned hsdiploma belowbachelors bachelorsabove female bothbioparents white avginc9799thou averageincomepovratio9799 expend2 i.hscohort i.highschoolstate, cluster(highschoolstate) quantile(.25)
+{res}
+{txt}.25 Quantile regression
+R-squared = {res}.16238675
+{txt}Number of obs = {res}1143
+{txt}Objective function = {res}10001.38
+
+{txt}Standard errors adjusted for {res}41{txt} clusters in highschoolstate
+{res}{txt}{hline 26}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}           avginc20172019{col 27}{c |}      Coef.{col 39}   Std. Err.{col 51}      t{col 59}   P>|t|{col 67}     [95% Con{col 80}f. Interval]
+{hline 26}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 13}satmathscore {c |}{col 27}{res}{space 2} 92.57955{col 39}{space 2} 804.8258{col 50}{space 1}    0.12{col 59}{space 3}0.908{col 67}{space 4}-1486.605{col 80}{space 3} 1671.764
+{txt}{space 5}advmathcreditsearned {c |}{col 27}{res}{space 2} 3392.538{col 39}{space 2} 1252.481{col 50}{space 1}    2.71{col 59}{space 3}0.007{col 67}{space 4} 934.9883{col 80}{space 3} 5850.087
+{txt}{space 16}hsdiploma {c |}{col 27}{res}{space 2} 5979.453{col 39}{space 2} 5619.028{col 50}{space 1}    1.06{col 59}{space 3}0.287{col 67}{space 4}-5045.893{col 80}{space 3}  17004.8
+{txt}{space 11}belowbachelors {c |}{col 27}{res}{space 2} 247.6832{col 39}{space 2} 5965.221{col 50}{space 1}    0.04{col 59}{space 3}0.967{col 67}{space 4}-11456.94{col 80}{space 3} 11952.31
+{txt}{space 11}bachelorsabove {c |}{col 27}{res}{space 2} 18842.43{col 39}{space 2} 5542.483{col 50}{space 1}    3.40{col 59}{space 3}0.001{col 67}{space 4} 7967.276{col 80}{space 3} 29717.58
+{txt}{space 19}female {c |}{col 27}{res}{space 2}-12533.38{col 39}{space 2} 1539.344{col 50}{space 1}   -8.14{col 59}{space 3}0.000{col 67}{space 4} -15553.8{col 80}{space 3}-9512.966
+{txt}{space 11}bothbioparents {c |}{col 27}{res}{space 2} 1686.867{col 39}{space 2} 1754.403{col 50}{space 1}    0.96{col 59}{space 3}0.337{col 67}{space 4}-1755.526{col 80}{space 3}  5129.26
+{txt}{space 20}white {c |}{col 27}{res}{space 2}-1552.674{col 39}{space 2} 2292.395{col 50}{space 1}   -0.68{col 59}{space 3}0.498{col 67}{space 4}-6050.685{col 80}{space 3} 2945.337
+{txt}{space 11}avginc9799thou {c |}{col 27}{res}{space 2} 181.0853{col 39}{space 2} 117.5442{col 50}{space 1}    1.54{col 59}{space 3}0.124{col 67}{space 4}-49.55347{col 80}{space 3} 411.7241
+{txt}averageincomepovratio9799 {c |}{col 27}{res}{space 2}-1998.539{col 39}{space 2} 1696.442{col 50}{space 1}   -1.18{col 59}{space 3}0.239{col 67}{space 4}-5327.205{col 80}{space 3} 1330.126
+{txt}{space 18}expend2 {c |}{col 27}{res}{space 2} 65.93202{col 39}{space 2} 25.88113{col 50}{space 1}    2.55{col 59}{space 3}0.011{col 67}{space 4} 15.14949{col 80}{space 3} 116.7146
+{txt}{space 25} {c |}
+{space 17}hscohort {c |}
+{space 20}1995  {c |}{col 27}{res}{space 2} 1975.835{col 39}{space 2} 2483.453{col 50}{space 1}    0.80{col 59}{space 3}0.426{col 67}{space 4}-2897.059{col 80}{space 3} 6848.729
+{txt}{space 20}1996  {c |}{col 27}{res}{space 2}-2448.673{col 39}{space 2}  2174.11{col 50}{space 1}   -1.13{col 59}{space 3}0.260{col 67}{space 4}-6714.591{col 80}{space 3} 1817.244
+{txt}{space 20}1997  {c |}{col 27}{res}{space 2} -1890.47{col 39}{space 2} 3468.741{col 50}{space 1}   -0.55{col 59}{space 3}0.586{col 67}{space 4}-8696.641{col 80}{space 3} 4915.701
+{txt}{space 20}1998  {c |}{col 27}{res}{space 2}-3664.118{col 39}{space 2} 2619.516{col 50}{space 1}   -1.40{col 59}{space 3}0.162{col 67}{space 4}-8803.989{col 80}{space 3} 1475.752
+{txt}{space 25} {c |}
+{space 10}highschoolstate {c |}
+{space 23}2  {c |}{col 27}{res}{space 2} 22403.42{col 39}{space 2}  7553.82{col 50}{space 1}    2.97{col 59}{space 3}0.003{col 67}{space 4} 7581.729{col 80}{space 3}  37225.1
+{txt}{space 23}3  {c |}{col 27}{res}{space 2}  4353.56{col 39}{space 2} 7406.347{col 50}{space 1}    0.59{col 59}{space 3}0.557{col 67}{space 4}-10178.77{col 80}{space 3} 18885.89
+{txt}{space 23}4  {c |}{col 27}{res}{space 2}-6474.018{col 39}{space 2} 8986.619{col 50}{space 1}   -0.72{col 59}{space 3}0.471{col 67}{space 4}-24107.06{col 80}{space 3} 11159.03
+{txt}{space 23}5  {c |}{col 27}{res}{space 2} 3974.303{col 39}{space 2}   7314.3{col 50}{space 1}    0.54{col 59}{space 3}0.587{col 67}{space 4}-10377.41{col 80}{space 3} 18326.02
+{txt}{space 23}6  {c |}{col 27}{res}{space 2}-5213.263{col 39}{space 2} 8030.322{col 50}{space 1}   -0.65{col 59}{space 3}0.516{col 67}{space 4}-20969.92{col 80}{space 3} 10543.39
+{txt}{space 23}7  {c |}{col 27}{res}{space 2} 12426.08{col 39}{space 2} 7171.578{col 50}{space 1}    1.73{col 59}{space 3}0.083{col 67}{space 4}-1645.591{col 80}{space 3} 26497.76
+{txt}{space 23}8  {c |}{col 27}{res}{space 2} 11512.84{col 39}{space 2} 7286.197{col 50}{space 1}    1.58{col 59}{space 3}0.114{col 67}{space 4}-2783.729{col 80}{space 3} 25809.42
+{txt}{space 23}9  {c |}{col 27}{res}{space 2} 917.9895{col 39}{space 2} 13456.61{col 50}{space 1}    0.07{col 59}{space 3}0.946{col 67}{space 4}-25485.84{col 80}{space 3} 27321.82
+{txt}{space 22}10  {c |}{col 27}{res}{space 2}  5243.64{col 39}{space 2} 7555.779{col 50}{space 1}    0.69{col 59}{space 3}0.488{col 67}{space 4}-9581.892{col 80}{space 3} 20069.17
+{txt}{space 22}11  {c |}{col 27}{res}{space 2}-1986.714{col 39}{space 2} 6969.432{col 50}{space 1}   -0.29{col 59}{space 3}0.776{col 67}{space 4}-15661.75{col 80}{space 3} 11688.32
+{txt}{space 22}14  {c |}{col 27}{res}{space 2}-1878.928{col 39}{space 2} 8473.192{col 50}{space 1}   -0.22{col 59}{space 3}0.825{col 67}{space 4}-18504.56{col 80}{space 3}  14746.7
+{txt}{space 22}15  {c |}{col 27}{res}{space 2} 7344.511{col 39}{space 2} 7424.364{col 50}{space 1}    0.99{col 59}{space 3}0.323{col 67}{space 4}-7223.166{col 80}{space 3} 21912.19
+{txt}{space 22}17  {c |}{col 27}{res}{space 2} 31104.56{col 39}{space 2} 16980.11{col 50}{space 1}    1.83{col 59}{space 3}0.067{col 67}{space 4}-2212.863{col 80}{space 3} 64421.99
+{txt}{space 22}18  {c |}{col 27}{res}{space 2}-14097.45{col 39}{space 2} 8547.062{col 50}{space 1}   -1.65{col 59}{space 3}0.099{col 67}{space 4}-30868.03{col 80}{space 3}  2673.12
+{txt}{space 22}19  {c |}{col 27}{res}{space 2}-12970.61{col 39}{space 2} 8395.651{col 50}{space 1}   -1.54{col 59}{space 3}0.123{col 67}{space 4}-29444.09{col 80}{space 3} 3502.875
+{txt}{space 22}21  {c |}{col 27}{res}{space 2} 8854.771{col 39}{space 2} 7394.852{col 50}{space 1}    1.20{col 59}{space 3}0.231{col 67}{space 4}-5654.999{col 80}{space 3} 23364.54
+{txt}{space 22}22  {c |}{col 27}{res}{space 2}-8912.891{col 39}{space 2}  8315.77{col 50}{space 1}   -1.07{col 59}{space 3}0.284{col 67}{space 4}-25229.64{col 80}{space 3} 7403.855
+{txt}{space 22}23  {c |}{col 27}{res}{space 2} 12979.38{col 39}{space 2} 7222.307{col 50}{space 1}    1.80{col 59}{space 3}0.073{col 67}{space 4}-1191.832{col 80}{space 3} 27150.59
+{txt}{space 22}24  {c |}{col 27}{res}{space 2}-11665.25{col 39}{space 2}  10631.6{col 50}{space 1}   -1.10{col 59}{space 3}0.273{col 67}{space 4}-32525.98{col 80}{space 3} 9195.482
+{txt}{space 22}25  {c |}{col 27}{res}{space 2}-34666.86{col 39}{space 2} 10892.34{col 50}{space 1}   -3.18{col 59}{space 3}0.002{col 67}{space 4}-56039.21{col 80}{space 3}-13294.52
+{txt}{space 22}26  {c |}{col 27}{res}{space 2} 12630.19{col 39}{space 2} 9535.391{col 50}{space 1}    1.32{col 59}{space 3}0.186{col 67}{space 4}-6079.624{col 80}{space 3} 31340.01
+{txt}{space 22}27  {c |}{col 27}{res}{space 2} 29581.32{col 39}{space 2} 9356.694{col 50}{space 1}    3.16{col 59}{space 3}0.002{col 67}{space 4} 11222.13{col 80}{space 3} 47940.51
+{txt}{space 22}31  {c |}{col 27}{res}{space 2} 14973.34{col 39}{space 2}  7475.01{col 50}{space 1}    2.00{col 59}{space 3}0.045{col 67}{space 4} 306.2879{col 80}{space 3} 29640.39
+{txt}{space 22}32  {c |}{col 27}{res}{space 2}  57041.9{col 39}{space 2} 16269.28{col 50}{space 1}    3.51{col 59}{space 3}0.000{col 67}{space 4} 25119.22{col 80}{space 3} 88964.58
+{txt}{space 22}33  {c |}{col 27}{res}{space 2} 8921.661{col 39}{space 2} 7352.356{col 50}{space 1}    1.21{col 59}{space 3}0.225{col 67}{space 4}-5504.725{col 80}{space 3} 23348.05
+{txt}{space 22}34  {c |}{col 27}{res}{space 2} 6224.844{col 39}{space 2} 7246.296{col 50}{space 1}    0.86{col 59}{space 3}0.391{col 67}{space 4}-7993.438{col 80}{space 3} 20443.13
+{txt}{space 22}35  {c |}{col 27}{res}{space 2} 7010.838{col 39}{space 2} 10039.95{col 50}{space 1}    0.70{col 59}{space 3}0.485{col 67}{space 4}   -12689{col 80}{space 3} 26710.67
+{txt}{space 22}36  {c |}{col 27}{res}{space 2}  31433.6{col 39}{space 2} 8733.272{col 50}{space 1}    3.60{col 59}{space 3}0.000{col 67}{space 4} 14297.66{col 80}{space 3} 48569.55
+{txt}{space 22}37  {c |}{col 27}{res}{space 2} -470.036{col 39}{space 2} 8072.178{col 50}{space 1}   -0.06{col 59}{space 3}0.954{col 67}{space 4}-16308.82{col 80}{space 3} 15368.75
+{txt}{space 22}38  {c |}{col 27}{res}{space 2} 7028.854{col 39}{space 2} 7758.764{col 50}{space 1}    0.91{col 59}{space 3}0.365{col 67}{space 4}-8194.965{col 80}{space 3} 22252.67
+{txt}{space 22}39  {c |}{col 27}{res}{space 2} 7617.738{col 39}{space 2}  7308.88{col 50}{space 1}    1.04{col 59}{space 3}0.298{col 67}{space 4}-6723.342{col 80}{space 3} 21958.82
+{txt}{space 22}40  {c |}{col 27}{res}{space 2}-2704.965{col 39}{space 2}  13744.8{col 50}{space 1}   -0.20{col 59}{space 3}0.844{col 67}{space 4}-29674.25{col 80}{space 3} 24264.32
+{txt}{space 22}41  {c |}{col 27}{res}{space 2}-2003.359{col 39}{space 2} 7672.631{col 50}{space 1}   -0.26{col 59}{space 3}0.794{col 67}{space 4}-17058.17{col 80}{space 3} 13051.45
+{txt}{space 22}42  {c |}{col 27}{res}{space 2}  6006.64{col 39}{space 2} 9157.462{col 50}{space 1}    0.66{col 59}{space 3}0.512{col 67}{space 4}-11961.63{col 80}{space 3} 23974.91
+{txt}{space 22}43  {c |}{col 27}{res}{space 2} 12211.34{col 39}{space 2} 10864.92{col 50}{space 1}    1.12{col 59}{space 3}0.261{col 67}{space 4}-9107.204{col 80}{space 3} 33529.89
+{txt}{space 22}44  {c |}{col 27}{res}{space 2} 9736.695{col 39}{space 2} 7295.929{col 50}{space 1}    1.33{col 59}{space 3}0.182{col 67}{space 4}-4578.975{col 80}{space 3} 24052.36
+{txt}{space 22}46  {c |}{col 27}{res}{space 2} 6809.002{col 39}{space 2} 7557.743{col 50}{space 1}    0.90{col 59}{space 3}0.368{col 67}{space 4}-8020.384{col 80}{space 3} 21638.39
+{txt}{space 22}47  {c |}{col 27}{res}{space 2} 401.1132{col 39}{space 2} 7255.419{col 50}{space 1}    0.06{col 59}{space 3}0.956{col 67}{space 4}-13835.07{col 80}{space 3} 14637.29
+{txt}{space 22}48  {c |}{col 27}{res}{space 2} 8301.099{col 39}{space 2} 7477.081{col 50}{space 1}    1.11{col 59}{space 3}0.267{col 67}{space 4}-6370.017{col 80}{space 3} 22972.22
+{txt}{space 22}50  {c |}{col 27}{res}{space 2}-12891.03{col 39}{space 2} 10279.46{col 50}{space 1}   -1.25{col 59}{space 3}0.210{col 67}{space 4}-33060.81{col 80}{space 3} 7278.752
+{txt}{space 25} {c |}
+{space 20}_cons {c |}{col 27}{res}{space 2} 15653.89{col 39}{space 2} 8793.912{col 50}{space 1}    1.78{col 59}{space 3}0.075{col 67}{space 4}-1601.034{col 80}{space 3} 32908.82
+{txt}{hline 26}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+Parente-Santos Silva test for intra-cluster correlation
+         Ho: No intra-cluster correlation
+
+            T{col 17}=  {res}-2.478
+{txt}         P>|T|  =  {res} 0.013
+{txt}
+{com}. 
+. estadd local fe Yes
+
+{txt}added macro:
+                 e(fe) : "{res:Yes}"
+
+{com}. 
+. est sto m10
+{txt}
+{com}.  
+. qreg2 avginc20172019 satmathscore advmathcreditsearned hsdiploma belowbachelors bachelorsabove female bothbioparents white avginc9799thou averageincomepovratio9799 expend2 i.hscohort i.highschoolstate, cluster(highschoolstate) quantile(.50)
+{res}
+{txt}Median regression
+R-squared = {res}.1865467
+{txt}Number of obs = {res}1143
+{txt}Objective function = {res}14831.738
+
+{txt}Standard errors adjusted for {res}41{txt} clusters in highschoolstate
+{res}{txt}{hline 26}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}           avginc20172019{col 27}{c |}      Coef.{col 39}   Std. Err.{col 51}      t{col 59}   P>|t|{col 67}     [95% Con{col 80}f. Interval]
+{hline 26}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 13}satmathscore {c |}{col 27}{res}{space 2} 262.8742{col 39}{space 2} 986.5166{col 50}{space 1}    0.27{col 59}{space 3}0.790{col 67}{space 4}-1672.814{col 80}{space 3} 2198.563
+{txt}{space 5}advmathcreditsearned {c |}{col 27}{res}{space 2} 3824.854{col 39}{space 2}  1182.13{col 50}{space 1}    3.24{col 59}{space 3}0.001{col 67}{space 4} 1505.344{col 80}{space 3} 6144.364
+{txt}{space 16}hsdiploma {c |}{col 27}{res}{space 2} 5686.207{col 39}{space 2} 5893.003{col 50}{space 1}    0.96{col 59}{space 3}0.335{col 67}{space 4}-5876.719{col 80}{space 3} 17249.13
+{txt}{space 11}belowbachelors {c |}{col 27}{res}{space 2} 8052.665{col 39}{space 2} 6215.533{col 50}{space 1}    1.30{col 59}{space 3}0.195{col 67}{space 4}-4143.111{col 80}{space 3} 20248.44
+{txt}{space 11}bachelorsabove {c |}{col 27}{res}{space 2} 26595.51{col 39}{space 2} 6513.966{col 50}{space 1}    4.08{col 59}{space 3}0.000{col 67}{space 4} 13814.16{col 80}{space 3} 39376.85
+{txt}{space 19}female {c |}{col 27}{res}{space 2} -16052.9{col 39}{space 2}  1547.24{col 50}{space 1}  -10.38{col 59}{space 3}0.000{col 67}{space 4}-19088.81{col 80}{space 3}-13016.99
+{txt}{space 11}bothbioparents {c |}{col 27}{res}{space 2} 1451.495{col 39}{space 2}  1687.51{col 50}{space 1}    0.86{col 59}{space 3}0.390{col 67}{space 4}-1859.645{col 80}{space 3} 4762.634
+{txt}{space 20}white {c |}{col 27}{res}{space 2} 475.8953{col 39}{space 2} 2929.582{col 50}{space 1}    0.16{col 59}{space 3}0.871{col 67}{space 4}-5272.369{col 80}{space 3} 6224.159
+{txt}{space 11}avginc9799thou {c |}{col 27}{res}{space 2} 195.2683{col 39}{space 2} 141.4993{col 50}{space 1}    1.38{col 59}{space 3}0.168{col 67}{space 4} -82.3739{col 80}{space 3} 472.9105
+{txt}averageincomepovratio9799 {c |}{col 27}{res}{space 2}-1399.254{col 39}{space 2} 2156.053{col 50}{space 1}   -0.65{col 59}{space 3}0.516{col 67}{space 4}-5629.743{col 80}{space 3} 2831.235
+{txt}{space 18}expend2 {c |}{col 27}{res}{space 2}  87.3998{col 39}{space 2} 21.02297{col 50}{space 1}    4.16{col 59}{space 3}0.000{col 67}{space 4} 46.14968{col 80}{space 3} 128.6499
+{txt}{space 25} {c |}
+{space 17}hscohort {c |}
+{space 20}1995  {c |}{col 27}{res}{space 2} 4377.809{col 39}{space 2} 3992.309{col 50}{space 1}    1.10{col 59}{space 3}0.273{col 67}{space 4}-3455.678{col 80}{space 3}  12211.3
+{txt}{space 20}1996  {c |}{col 27}{res}{space 2}-3135.139{col 39}{space 2}   2507.8{col 50}{space 1}   -1.25{col 59}{space 3}0.212{col 67}{space 4}-8055.805{col 80}{space 3} 1785.527
+{txt}{space 20}1997  {c |}{col 27}{res}{space 2} 3116.074{col 39}{space 2} 2842.213{col 50}{space 1}    1.10{col 59}{space 3}0.273{col 67}{space 4}-2460.759{col 80}{space 3} 8692.907
+{txt}{space 20}1998  {c |}{col 27}{res}{space 2}-2834.629{col 39}{space 2} 2861.936{col 50}{space 1}   -0.99{col 59}{space 3}0.322{col 67}{space 4}-8450.161{col 80}{space 3} 2780.903
+{txt}{space 25} {c |}
+{space 10}highschoolstate {c |}
+{space 23}2  {c |}{col 27}{res}{space 2} 7171.308{col 39}{space 2} 4929.962{col 50}{space 1}    1.45{col 59}{space 3}0.146{col 67}{space 4}-2501.991{col 80}{space 3} 16844.61
+{txt}{space 23}3  {c |}{col 27}{res}{space 2}-4209.968{col 39}{space 2} 4882.682{col 50}{space 1}   -0.86{col 59}{space 3}0.389{col 67}{space 4} -13790.5{col 80}{space 3} 5370.561
+{txt}{space 23}4  {c |}{col 27}{res}{space 2}-15652.77{col 39}{space 2} 6160.753{col 50}{space 1}   -2.54{col 59}{space 3}0.011{col 67}{space 4}-27741.06{col 80}{space 3}-3564.483
+{txt}{space 23}5  {c |}{col 27}{res}{space 2}  451.652{col 39}{space 2} 4178.812{col 50}{space 1}    0.11{col 59}{space 3}0.914{col 67}{space 4}-7747.782{col 80}{space 3} 8651.086
+{txt}{space 23}6  {c |}{col 27}{res}{space 2}-1026.907{col 39}{space 2} 4521.866{col 50}{space 1}   -0.23{col 59}{space 3}0.820{col 67}{space 4}-9899.464{col 80}{space 3} 7845.649
+{txt}{space 23}7  {c |}{col 27}{res}{space 2} 9614.489{col 39}{space 2} 3832.834{col 50}{space 1}    2.51{col 59}{space 3}0.012{col 67}{space 4} 2093.914{col 80}{space 3} 17135.06
+{txt}{space 23}8  {c |}{col 27}{res}{space 2} 4680.796{col 39}{space 2} 4866.466{col 50}{space 1}    0.96{col 59}{space 3}0.336{col 67}{space 4}-4867.915{col 80}{space 3} 14229.51
+{txt}{space 23}9  {c |}{col 27}{res}{space 2}-33717.41{col 39}{space 2} 9684.361{col 50}{space 1}   -3.48{col 59}{space 3}0.001{col 67}{space 4}-52719.53{col 80}{space 3}-14715.29
+{txt}{space 22}10  {c |}{col 27}{res}{space 2} 2858.453{col 39}{space 2} 3926.983{col 50}{space 1}    0.73{col 59}{space 3}0.467{col 67}{space 4}-4846.856{col 80}{space 3} 10563.76
+{txt}{space 22}11  {c |}{col 27}{res}{space 2} -10550.1{col 39}{space 2}  3118.92{col 50}{space 1}   -3.38{col 59}{space 3}0.001{col 67}{space 4}-16669.88{col 80}{space 3}-4430.331
+{txt}{space 22}14  {c |}{col 27}{res}{space 2} 4536.286{col 39}{space 2} 4491.042{col 50}{space 1}    1.01{col 59}{space 3}0.313{col 67}{space 4}-4275.788{col 80}{space 3} 13348.36
+{txt}{space 22}15  {c |}{col 27}{res}{space 2} -1528.53{col 39}{space 2} 3837.981{col 50}{space 1}   -0.40{col 59}{space 3}0.691{col 67}{space 4}-9059.204{col 80}{space 3} 6002.143
+{txt}{space 22}17  {c |}{col 27}{res}{space 2} 7665.983{col 39}{space 2} 5515.753{col 50}{space 1}    1.39{col 59}{space 3}0.165{col 67}{space 4}-3156.724{col 80}{space 3} 18488.69
+{txt}{space 22}18  {c |}{col 27}{res}{space 2}-24198.17{col 39}{space 2} 6290.659{col 50}{space 1}   -3.85{col 59}{space 3}0.000{col 67}{space 4}-36541.35{col 80}{space 3}-11854.98
+{txt}{space 22}19  {c |}{col 27}{res}{space 2}-850.8871{col 39}{space 2} 9396.817{col 50}{space 1}   -0.09{col 59}{space 3}0.928{col 67}{space 4} -19288.8{col 80}{space 3} 17587.03
+{txt}{space 22}21  {c |}{col 27}{res}{space 2} 6606.359{col 39}{space 2} 4738.776{col 50}{space 1}    1.39{col 59}{space 3}0.164{col 67}{space 4}-2691.806{col 80}{space 3} 15904.52
+{txt}{space 22}22  {c |}{col 27}{res}{space 2}  8422.56{col 39}{space 2} 4298.203{col 50}{space 1}    1.96{col 59}{space 3}0.050{col 67}{space 4}-11.13519{col 80}{space 3} 16856.26
+{txt}{space 22}23  {c |}{col 27}{res}{space 2}-5208.142{col 39}{space 2} 3934.343{col 50}{space 1}   -1.32{col 59}{space 3}0.186{col 67}{space 4}-12927.89{col 80}{space 3} 2511.609
+{txt}{space 22}24  {c |}{col 27}{res}{space 2}-14325.89{col 39}{space 2} 7963.762{col 50}{space 1}   -1.80{col 59}{space 3}0.072{col 67}{space 4}-29951.94{col 80}{space 3} 1300.165
+{txt}{space 22}25  {c |}{col 27}{res}{space 2}-60110.38{col 39}{space 2} 4815.826{col 50}{space 1}  -12.48{col 59}{space 3}0.000{col 67}{space 4}-69559.73{col 80}{space 3}-50661.04
+{txt}{space 22}26  {c |}{col 27}{res}{space 2}-7454.501{col 39}{space 2} 5840.957{col 50}{space 1}   -1.28{col 59}{space 3}0.202{col 67}{space 4} -18915.3{col 80}{space 3} 4006.302
+{txt}{space 22}27  {c |}{col 27}{res}{space 2} 7483.819{col 39}{space 2} 6138.238{col 50}{space 1}    1.22{col 59}{space 3}0.223{col 67}{space 4}-4560.292{col 80}{space 3} 19527.93
+{txt}{space 22}31  {c |}{col 27}{res}{space 2} 4464.301{col 39}{space 2}  3933.35{col 50}{space 1}    1.13{col 59}{space 3}0.257{col 67}{space 4}-3253.502{col 80}{space 3}  12182.1
+{txt}{space 22}32  {c |}{col 27}{res}{space 2} 58805.78{col 39}{space 2}  17765.4{col 50}{space 1}    3.31{col 59}{space 3}0.001{col 67}{space 4}  23947.5{col 80}{space 3} 93664.06
+{txt}{space 22}33  {c |}{col 27}{res}{space 2} 1004.803{col 39}{space 2} 3972.686{col 50}{space 1}    0.25{col 59}{space 3}0.800{col 67}{space 4}-6790.183{col 80}{space 3} 8799.788
+{txt}{space 22}34  {c |}{col 27}{res}{space 2} -4285.79{col 39}{space 2} 4140.271{col 50}{space 1}   -1.04{col 59}{space 3}0.301{col 67}{space 4} -12409.6{col 80}{space 3} 3838.021
+{txt}{space 22}35  {c |}{col 27}{res}{space 2}-7947.076{col 39}{space 2} 4895.293{col 50}{space 1}   -1.62{col 59}{space 3}0.105{col 67}{space 4}-17552.35{col 80}{space 3} 1658.198
+{txt}{space 22}36  {c |}{col 27}{res}{space 2} 25112.98{col 39}{space 2} 5234.804{col 50}{space 1}    4.80{col 59}{space 3}0.000{col 67}{space 4} 14841.54{col 80}{space 3} 35384.42
+{txt}{space 22}37  {c |}{col 27}{res}{space 2}-15361.98{col 39}{space 2} 4453.546{col 50}{space 1}   -3.45{col 59}{space 3}0.001{col 67}{space 4}-24100.48{col 80}{space 3}-6623.478
+{txt}{space 22}38  {c |}{col 27}{res}{space 2} 13572.29{col 39}{space 2} 6672.329{col 50}{space 1}    2.03{col 59}{space 3}0.042{col 67}{space 4}   480.22{col 80}{space 3} 26664.37
+{txt}{space 22}39  {c |}{col 27}{res}{space 2}-2127.308{col 39}{space 2} 3927.168{col 50}{space 1}   -0.54{col 59}{space 3}0.588{col 67}{space 4}-9832.981{col 80}{space 3} 5578.365
+{txt}{space 22}40  {c |}{col 27}{res}{space 2}-26930.85{col 39}{space 2} 10396.59{col 50}{space 1}   -2.59{col 59}{space 3}0.010{col 67}{space 4}-47330.45{col 80}{space 3}-6531.243
+{txt}{space 22}41  {c |}{col 27}{res}{space 2} -10154.3{col 39}{space 2} 4781.305{col 50}{space 1}   -2.12{col 59}{space 3}0.034{col 67}{space 4}-19535.91{col 80}{space 3} -772.686
+{txt}{space 22}42  {c |}{col 27}{res}{space 2} 26931.92{col 39}{space 2}  10217.6{col 50}{space 1}    2.64{col 59}{space 3}0.009{col 67}{space 4} 6883.513{col 80}{space 3} 46980.32
+{txt}{space 22}43  {c |}{col 27}{res}{space 2}  39488.4{col 39}{space 2} 9395.502{col 50}{space 1}    4.20{col 59}{space 3}0.000{col 67}{space 4} 21053.06{col 80}{space 3} 57923.73
+{txt}{space 22}44  {c |}{col 27}{res}{space 2}-432.6058{col 39}{space 2} 4157.386{col 50}{space 1}   -0.10{col 59}{space 3}0.917{col 67}{space 4}    -8590{col 80}{space 3} 7724.788
+{txt}{space 22}46  {c |}{col 27}{res}{space 2}-9874.846{col 39}{space 2} 4221.201{col 50}{space 1}   -2.34{col 59}{space 3}0.019{col 67}{space 4}-18157.45{col 80}{space 3} -1592.24
+{txt}{space 22}47  {c |}{col 27}{res}{space 2} 23.73688{col 39}{space 2} 4094.731{col 50}{space 1}    0.01{col 59}{space 3}0.995{col 67}{space 4}-8010.718{col 80}{space 3} 8058.192
+{txt}{space 22}48  {c |}{col 27}{res}{space 2} -2190.28{col 39}{space 2} 4194.102{col 50}{space 1}   -0.52{col 59}{space 3}0.602{col 67}{space 4}-10419.72{col 80}{space 3} 6039.156
+{txt}{space 22}50  {c |}{col 27}{res}{space 2}  9661.92{col 39}{space 2}  17842.4{col 50}{space 1}    0.54{col 59}{space 3}0.588{col 67}{space 4}-25347.44{col 80}{space 3} 44671.28
+{txt}{space 25} {c |}
+{space 20}_cons {c |}{col 27}{res}{space 2} 27796.13{col 39}{space 2} 3208.232{col 50}{space 1}    8.66{col 59}{space 3}0.000{col 67}{space 4} 21501.11{col 80}{space 3} 34091.14
+{txt}{hline 26}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+Parente-Santos Silva test for intra-cluster correlation
+         Ho: No intra-cluster correlation
+
+            T{col 17}=  {res}-3.353
+{txt}         P>|T|  =  {res} 0.001
+{txt}
+{com}. 
+. 
+. estadd local fe Yes
+
+{txt}added macro:
+                 e(fe) : "{res:Yes}"
+
+{com}. 
+. est sto m11
+{txt}
+{com}. 
+. qreg2 avginc20172019 satmathscore advmathcreditsearned hsdiploma belowbachelors bachelorsabove female bothbioparents white avginc9799thou averageincomepovratio9799 expend2 i.hscohort i.highschoolstate, cluster(highschoolstate) quantile(.75)
+{res}
+{txt}.75 Quantile regression
+R-squared = {res}.18847659
+{txt}Number of obs = {res}1143
+{txt}Objective function = {res}14681.557
+
+{txt}Standard errors adjusted for {res}41{txt} clusters in highschoolstate
+{res}{txt}{hline 26}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}           avginc20172019{col 27}{c |}      Coef.{col 39}   Std. Err.{col 51}      t{col 59}   P>|t|{col 67}     [95% Con{col 80}f. Interval]
+{hline 26}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 13}satmathscore {c |}{col 27}{res}{space 2} 2595.045{col 39}{space 2} 1767.809{col 50}{space 1}    1.47{col 59}{space 3}0.142{col 67}{space 4}-873.6515{col 80}{space 3} 6063.742
+{txt}{space 5}advmathcreditsearned {c |}{col 27}{res}{space 2} 4768.404{col 39}{space 2} 2121.797{col 50}{space 1}    2.25{col 59}{space 3}0.025{col 67}{space 4} 605.1321{col 80}{space 3} 8931.677
+{txt}{space 16}hsdiploma {c |}{col 27}{res}{space 2} 6408.015{col 39}{space 2} 11240.68{col 50}{space 1}    0.57{col 59}{space 3}0.569{col 67}{space 4}-15647.82{col 80}{space 3} 28463.85
+{txt}{space 11}belowbachelors {c |}{col 27}{res}{space 2} 9083.528{col 39}{space 2} 12793.22{col 50}{space 1}    0.71{col 59}{space 3}0.478{col 67}{space 4}-16018.62{col 80}{space 3} 34185.68
+{txt}{space 11}bachelorsabove {c |}{col 27}{res}{space 2} 26416.41{col 39}{space 2} 12897.06{col 50}{space 1}    2.05{col 59}{space 3}0.041{col 67}{space 4} 1110.518{col 80}{space 3} 51722.31
+{txt}{space 19}female {c |}{col 27}{res}{space 2}-22182.09{col 39}{space 2} 2796.377{col 50}{space 1}   -7.93{col 59}{space 3}0.000{col 67}{space 4}-27668.98{col 80}{space 3}-16695.19
+{txt}{space 11}bothbioparents {c |}{col 27}{res}{space 2}-1034.859{col 39}{space 2} 2911.824{col 50}{space 1}   -0.36{col 59}{space 3}0.722{col 67}{space 4}-6748.278{col 80}{space 3}  4678.56
+{txt}{space 20}white {c |}{col 27}{res}{space 2} 1229.374{col 39}{space 2} 3831.888{col 50}{space 1}    0.32{col 59}{space 3}0.748{col 67}{space 4}-6289.344{col 80}{space 3} 8748.092
+{txt}{space 11}avginc9799thou {c |}{col 27}{res}{space 2} 221.6341{col 39}{space 2}  223.934{col 50}{space 1}    0.99{col 59}{space 3}0.323{col 67}{space 4}-217.7568{col 80}{space 3}  661.025
+{txt}averageincomepovratio9799 {c |}{col 27}{res}{space 2}-423.5094{col 39}{space 2}  3563.18{col 50}{space 1}   -0.12{col 59}{space 3}0.905{col 67}{space 4}-7414.985{col 80}{space 3} 6567.966
+{txt}{space 18}expend2 {c |}{col 27}{res}{space 2} 39.21796{col 39}{space 2} 37.26254{col 50}{space 1}    1.05{col 59}{space 3}0.293{col 67}{space 4}-33.89654{col 80}{space 3} 112.3325
+{txt}{space 25} {c |}
+{space 17}hscohort {c |}
+{space 20}1995  {c |}{col 27}{res}{space 2}-1940.247{col 39}{space 2} 4664.883{col 50}{space 1}   -0.42{col 59}{space 3}0.678{col 67}{space 4}-11093.42{col 80}{space 3}  7212.93
+{txt}{space 20}1996  {c |}{col 27}{res}{space 2}-11607.77{col 39}{space 2}  4976.98{col 50}{space 1}   -2.33{col 59}{space 3}0.020{col 67}{space 4}-21373.33{col 80}{space 3}-1842.214
+{txt}{space 20}1997  {c |}{col 27}{res}{space 2}-8466.349{col 39}{space 2} 6091.727{col 50}{space 1}   -1.39{col 59}{space 3}0.165{col 67}{space 4} -20419.2{col 80}{space 3} 3486.502
+{txt}{space 20}1998  {c |}{col 27}{res}{space 2}-9685.065{col 39}{space 2} 5227.366{col 50}{space 1}   -1.85{col 59}{space 3}0.064{col 67}{space 4}-19941.91{col 80}{space 3} 571.7841
+{txt}{space 25} {c |}
+{space 10}highschoolstate {c |}
+{space 23}2  {c |}{col 27}{res}{space 2} 14016.91{col 39}{space 2} 5367.162{col 50}{space 1}    2.61{col 59}{space 3}0.009{col 67}{space 4} 3485.766{col 80}{space 3} 24548.06
+{txt}{space 23}3  {c |}{col 27}{res}{space 2} 2400.008{col 39}{space 2} 11020.36{col 50}{space 1}    0.22{col 59}{space 3}0.828{col 67}{space 4}-19223.54{col 80}{space 3} 24023.55
+{txt}{space 23}4  {c |}{col 27}{res}{space 2}-32080.07{col 39}{space 2}  10105.7{col 50}{space 1}   -3.17{col 59}{space 3}0.002{col 67}{space 4}-51908.92{col 80}{space 3}-12251.21
+{txt}{space 23}5  {c |}{col 27}{res}{space 2} 5187.903{col 39}{space 2} 11257.15{col 50}{space 1}    0.46{col 59}{space 3}0.645{col 67}{space 4}-16900.25{col 80}{space 3} 27276.05
+{txt}{space 23}6  {c |}{col 27}{res}{space 2}-6266.336{col 39}{space 2} 10318.33{col 50}{space 1}   -0.61{col 59}{space 3}0.544{col 67}{space 4}-26512.39{col 80}{space 3} 13979.72
+{txt}{space 23}7  {c |}{col 27}{res}{space 2} 3681.169{col 39}{space 2} 8046.049{col 50}{space 1}    0.46{col 59}{space 3}0.647{col 67}{space 4}-12106.34{col 80}{space 3} 19468.68
+{txt}{space 23}8  {c |}{col 27}{res}{space 2}-3916.578{col 39}{space 2} 11319.07{col 50}{space 1}   -0.35{col 59}{space 3}0.729{col 67}{space 4}-26126.22{col 80}{space 3} 18293.07
+{txt}{space 23}9  {c |}{col 27}{res}{space 2}-61425.29{col 39}{space 2} 12599.32{col 50}{space 1}   -4.88{col 59}{space 3}0.000{col 67}{space 4}-86146.97{col 80}{space 3} -36703.6
+{txt}{space 22}10  {c |}{col 27}{res}{space 2} 407.9209{col 39}{space 2} 10218.58{col 50}{space 1}    0.04{col 59}{space 3}0.968{col 67}{space 4}-19642.42{col 80}{space 3} 20458.26
+{txt}{space 22}11  {c |}{col 27}{res}{space 2}-8541.741{col 39}{space 2} 10461.61{col 50}{space 1}   -0.82{col 59}{space 3}0.414{col 67}{space 4}-29068.94{col 80}{space 3} 11985.45
+{txt}{space 22}14  {c |}{col 27}{res}{space 2} 18776.62{col 39}{space 2} 14674.24{col 50}{space 1}    1.28{col 59}{space 3}0.201{col 67}{space 4}-10016.36{col 80}{space 3} 47569.61
+{txt}{space 22}15  {c |}{col 27}{res}{space 2}-918.9233{col 39}{space 2}  9375.52{col 50}{space 1}   -0.10{col 59}{space 3}0.922{col 67}{space 4}-19315.05{col 80}{space 3}  17477.2
+{txt}{space 22}17  {c |}{col 27}{res}{space 2} 15304.72{col 39}{space 2} 9896.723{col 50}{space 1}    1.55{col 59}{space 3}0.122{col 67}{space 4}-4114.086{col 80}{space 3} 34723.52
+{txt}{space 22}18  {c |}{col 27}{res}{space 2}-6382.895{col 39}{space 2} 17033.57{col 50}{space 1}   -0.37{col 59}{space 3}0.708{col 67}{space 4}-39805.22{col 80}{space 3} 27039.43
+{txt}{space 22}19  {c |}{col 27}{res}{space 2} 42426.95{col 39}{space 2} 17224.01{col 50}{space 1}    2.46{col 59}{space 3}0.014{col 67}{space 4} 8630.955{col 80}{space 3} 76222.95
+{txt}{space 22}21  {c |}{col 27}{res}{space 2} 6373.587{col 39}{space 2} 11987.42{col 50}{space 1}    0.53{col 59}{space 3}0.595{col 67}{space 4}-17147.47{col 80}{space 3} 29894.64
+{txt}{space 22}22  {c |}{col 27}{res}{space 2} 30871.44{col 39}{space 2}    11931{col 50}{space 1}    2.59{col 59}{space 3}0.010{col 67}{space 4} 7461.092{col 80}{space 3} 54281.78
+{txt}{space 22}23  {c |}{col 27}{res}{space 2} 17401.24{col 39}{space 2} 11187.62{col 50}{space 1}    1.56{col 59}{space 3}0.120{col 67}{space 4}-4550.483{col 80}{space 3} 39352.96
+{txt}{space 22}24  {c |}{col 27}{res}{space 2}-13024.84{col 39}{space 2} 14425.81{col 50}{space 1}   -0.90{col 59}{space 3}0.367{col 67}{space 4}-41330.37{col 80}{space 3}  15280.7
+{txt}{space 22}25  {c |}{col 27}{res}{space 2}-45508.19{col 39}{space 2} 13577.65{col 50}{space 1}   -3.35{col 59}{space 3}0.001{col 67}{space 4}-72149.51{col 80}{space 3}-18866.87
+{txt}{space 22}26  {c |}{col 27}{res}{space 2}-17045.97{col 39}{space 2} 10086.36{col 50}{space 1}   -1.69{col 59}{space 3}0.091{col 67}{space 4}-36836.87{col 80}{space 3} 2744.938
+{txt}{space 22}27  {c |}{col 27}{res}{space 2} -8342.08{col 39}{space 2} 10303.03{col 50}{space 1}   -0.81{col 59}{space 3}0.418{col 67}{space 4}-28558.12{col 80}{space 3} 11873.96
+{txt}{space 22}31  {c |}{col 27}{res}{space 2} 15896.32{col 39}{space 2} 10691.97{col 50}{space 1}    1.49{col 59}{space 3}0.137{col 67}{space 4}-5082.877{col 80}{space 3} 36875.52
+{txt}{space 22}32  {c |}{col 27}{res}{space 2}  32556.8{col 39}{space 2} 10203.47{col 50}{space 1}    3.19{col 59}{space 3}0.001{col 67}{space 4} 12536.11{col 80}{space 3} 52577.49
+{txt}{space 22}33  {c |}{col 27}{res}{space 2} 8357.787{col 39}{space 2} 10753.36{col 50}{space 1}    0.78{col 59}{space 3}0.437{col 67}{space 4}-12741.86{col 80}{space 3} 29457.43
+{txt}{space 22}34  {c |}{col 27}{res}{space 2}-11777.74{col 39}{space 2} 9823.694{col 50}{space 1}   -1.20{col 59}{space 3}0.231{col 67}{space 4}-31053.25{col 80}{space 3} 7497.772
+{txt}{space 22}35  {c |}{col 27}{res}{space 2} -10626.5{col 39}{space 2}  13559.3{col 50}{space 1}   -0.78{col 59}{space 3}0.433{col 67}{space 4}-37231.81{col 80}{space 3} 15978.81
+{txt}{space 22}36  {c |}{col 27}{res}{space 2} 18097.04{col 39}{space 2} 11050.64{col 50}{space 1}    1.64{col 59}{space 3}0.102{col 67}{space 4}-3585.905{col 80}{space 3} 39779.99
+{txt}{space 22}37  {c |}{col 27}{res}{space 2}-28108.52{col 39}{space 2} 10997.65{col 50}{space 1}   -2.56{col 59}{space 3}0.011{col 67}{space 4} -49687.5{col 80}{space 3}-6529.539
+{txt}{space 22}38  {c |}{col 27}{res}{space 2} 6067.996{col 39}{space 2}  9553.61{col 50}{space 1}    0.64{col 59}{space 3}0.525{col 67}{space 4}-12677.57{col 80}{space 3} 24813.56
+{txt}{space 22}39  {c |}{col 27}{res}{space 2}-3046.275{col 39}{space 2} 10301.86{col 50}{space 1}   -0.30{col 59}{space 3}0.768{col 67}{space 4}-23260.02{col 80}{space 3} 17167.47
+{txt}{space 22}40  {c |}{col 27}{res}{space 2} -56639.2{col 39}{space 2} 12643.02{col 50}{space 1}   -4.48{col 59}{space 3}0.000{col 67}{space 4}-81446.64{col 80}{space 3}-31831.76
+{txt}{space 22}41  {c |}{col 27}{res}{space 2}-14176.73{col 39}{space 2} 9804.797{col 50}{space 1}   -1.45{col 59}{space 3}0.148{col 67}{space 4}-33415.16{col 80}{space 3} 5061.702
+{txt}{space 22}42  {c |}{col 27}{res}{space 2} 118328.4{col 39}{space 2} 16707.02{col 50}{space 1}    7.08{col 59}{space 3}0.000{col 67}{space 4} 85546.81{col 80}{space 3}   151110
+{txt}{space 22}43  {c |}{col 27}{res}{space 2} 22999.43{col 39}{space 2} 8930.384{col 50}{space 1}    2.58{col 59}{space 3}0.010{col 67}{space 4} 5476.726{col 80}{space 3} 40522.14
+{txt}{space 22}44  {c |}{col 27}{res}{space 2}-4402.677{col 39}{space 2}  9478.02{col 50}{space 1}   -0.46{col 59}{space 3}0.642{col 67}{space 4}-22999.92{col 80}{space 3} 14194.57
+{txt}{space 22}46  {c |}{col 27}{res}{space 2}-11996.94{col 39}{space 2} 10097.69{col 50}{space 1}   -1.19{col 59}{space 3}0.235{col 67}{space 4}-31810.07{col 80}{space 3}  7816.18
+{txt}{space 22}47  {c |}{col 27}{res}{space 2}-2867.993{col 39}{space 2} 10432.48{col 50}{space 1}   -0.27{col 59}{space 3}0.783{col 67}{space 4}-23338.02{col 80}{space 3} 17602.03
+{txt}{space 22}48  {c |}{col 27}{res}{space 2} 10642.18{col 39}{space 2} 11117.94{col 50}{space 1}    0.96{col 59}{space 3}0.339{col 67}{space 4}-11172.83{col 80}{space 3} 32457.19
+{txt}{space 22}50  {c |}{col 27}{res}{space 2}-19964.75{col 39}{space 2}  13692.2{col 50}{space 1}   -1.46{col 59}{space 3}0.145{col 67}{space 4}-46830.83{col 80}{space 3} 6901.323
+{txt}{space 25} {c |}
+{space 20}_cons {c |}{col 27}{res}{space 2} 44710.78{col 39}{space 2}  4893.13{col 50}{space 1}    9.14{col 59}{space 3}0.000{col 67}{space 4} 35109.75{col 80}{space 3} 54311.81
+{txt}{hline 26}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+Parente-Santos Silva test for intra-cluster correlation
+         Ho: No intra-cluster correlation
+
+            T{col 17}=  {res}-4.248
+{txt}         P>|T|  =  {res} 0.000
+{txt}
+{com}. 
+. 
+. estadd local fe Yes
+
+{txt}added macro:
+                 e(fe) : "{res:Yes}"
+
+{com}. 
+. est sto m12
+{txt}
+{com}. 
+. esttab m10 m11 m12 using SATMathIncRankQuantExpend.tex, keep (satmathscore advmathcreditsearned hsdiploma belowbachelors bachelorsabove female bothbioparents white avginc9799thou averageincomepovratio9799 expend2) cells(b(star fmt(3)) se(fmt(3) par)) starlevels(* .1 ** .05 *** .01 **** .001) stats(fe r2 N, /// 
+> labels("state and cohort FE" "R^2")) legend nolabel nonumber title("Quantile Regression Income w/ Expenditures") mtitles("25th" "50th" "75th")
+{res}{txt}(output written to {browse  `"SATMathIncRankQuantExpend.tex"'})
+
+{com}. 
+. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\jcoger\Documents\Essay1\SATMathWork\SATMathIncomeRankQuantileV1\logfiles\SATMathIncRankQuantAnalysis.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res} 7 Sep 2022, 12:26:43
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}

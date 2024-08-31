@@ -1,0 +1,157 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\jcoger\Documents\Essay1\SATMathWork\SATMathIncomeRankQuantileV1\logfiles\SATMathIncRankQuantFinalDataset.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}24 Aug 2022, 13:09:10
+{txt}
+{com}. 
+. *Define the directory
+. global PATH "C:\Users\jcoger\Documents\Essay1\SATMathWork\SATMathIncomeRankQuantileV1\dofiles_dtafiles"
+{txt}
+{com}. cd $PATH
+{res}C:\Users\jcoger\Documents\Essay1\SATMathWork\SATMathIncomeRankQuantileV1\dofiles_dtafiles
+{txt}
+{com}. 
+. *import dataset with additional variables
+. import delimited "C:\Users\jcoger\Documents\Essay1\SATMathWork\SATMathIncomeRankQuantileV1\rawdata\SATMathIncomeRankQuantileEducation.csv"
+{res}{text}(9 vars, 8,984 obs)
+
+{com}. 
+. *rename,label, and keep id, parent one 97 income, parent two 97 inc, and education variables 
+. rename r0000100 id
+{res}{txt}
+{com}. 
+. label variable id "identification number"
+{txt}
+{com}. 
+. rename r0609800 parentone97inc
+{res}{txt}
+{com}. 
+. label variable parentone97inc "parent one 97 income from wages and salary"
+{txt}
+{com}. 
+. rename r0610500 parenttwo97inc
+{res}{txt}
+{com}. 
+. label variable parenttwo97inc "parent two 97 income from wages and salary"
+{txt}
+{com}. 
+. rename z9083900 education
+{res}{txt}
+{com}. 
+. label variable education "highest level of education attained"
+{txt}
+{com}. 
+. keep id parentone97inc parenttwo97inc education
+{txt}
+{com}. 
+. *merge added variables with existing dataset
+. merge 1:m id using "C:\Users\jcoger\Documents\Essay1\SATMathWork\SATMathIncomeRankQuantileV1\dofiles_dtafiles\SATMathIncRankQuantFinalDatasetInstruments.dta
+{res}
+{txt}{col 5}Result{col 38}# of obs.
+{col 5}{hline 41}
+{col 5}not matched{col 30}{res}           7,830
+{txt}{col 9}from master{col 30}{res}           7,830{txt}  (_merge==1)
+{col 9}from using{col 30}{res}               0{txt}  (_merge==2)
+
+{col 5}matched{col 30}{res}           1,154{txt}  (_merge==3)
+{col 5}{hline 41}
+
+{com}. 
+. *drop cases only on the master dataset
+. drop if _merge == 1 
+{txt}(7,830 observations deleted)
+
+{com}. 
+. *drop if missing values for avginc20172019 
+. drop if avginc20172019 == .
+{txt}(0 observations deleted)
+
+{com}. 
+. *drop if 0 values for avginc20172019, avginc9799,  or education
+. drop if avginc20172019 == 0| avginc9799 == 0| avgincomepovratio9799 == 0| education < 0
+{txt}(10 observations deleted)
+
+{com}. 
+. *create percentile rank variables for parent and child income then label variables 
+. egen n = count (avginc20172019)
+{txt}
+{com}. 
+. egen i = rank (avginc20172019), track
+{txt}
+{com}. 
+. gen incomerank = ((i-1) / (n-1)) * 100 
+{txt}
+{com}. 
+. drop n i 
+{txt}
+{com}. 
+. label variable incomerank "percentile rank of average of 2017 and 2019 income from salary and wages"
+{txt}
+{com}. 
+. *create dummy variables for education levels
+. generate hsdiploma = 0
+{txt}
+{com}. 
+. replace hsdiploma = 1 if education == 2
+{txt}(313 real changes made)
+
+{com}. 
+. generate belowbachelors = 0
+{txt}
+{com}. 
+. replace belowbachelors = 1 if education == 3
+{txt}(102 real changes made)
+
+{com}. 
+. generate bachelorsabove = 0
+{txt}
+{com}. 
+. replace bachelorsabove = 1 if education > = 4
+{txt}(707 real changes made)
+
+{com}. 
+. summarize hsdiploma belowbachelors bachelorsabove 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 3}hsdiploma {c |}{res}      1,144    .2736014    .4460017          0          1
+{txt}belowbache~s {c |}{res}      1,144    .0891608    .2851004          0          1
+{txt}bachelorsa~e {c |}{res}      1,144     .618007    .4860873          0          1
+{txt}
+{com}. 
+. summarize education if hsdiploma == 0 & belowbachelors == 0 & bachelorsabove == 0
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 3}education {c |}{res}         22    .7272727    .4558423          0          1
+{txt}
+{com}. 
+. *transform total state expenditures on STEM reform, total recipients of STEM reform and average household income from 97-99 variables for better interpretation of coefficients
+. generate expend2 = expend/1000000
+{txt}
+{com}. 
+. generate rec2 = rec/1000
+{txt}
+{com}. 
+. generate avginc9799thou = avginc9799/1000
+{txt}
+{com}. 
+. *drop if zero value for incomerank
+. drop if incomerank == 0
+{txt}(1 observation deleted)
+
+{com}. 
+. *save final dataset
+. save "SATMathIncRankQuantFinalDataset.dta"
+{txt}file SATMathIncRankQuantFinalDataset.dta saved
+
+{com}. 
+. 
+. 
+. 
+. 
+{txt}end of do-file
+
+{com}. exit, clear

@@ -1,0 +1,298 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\logfiles\AdvMathIncRankQuantFinalDataset.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}24 Aug 2022, 12:10:58
+{txt}
+{com}. 
+. *Define the directory
+. global PATH "C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\dofiles_dtafiles"
+{txt}
+{com}. cd $PATH
+{res}C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\dofiles_dtafiles
+{txt}
+{com}. 
+. *import dataset with additional variables
+. import delimited "C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\rawdata\AdvMathIncomeRankQuantileEducation.csv"
+{res}{text}(9 vars, 8,984 obs)
+
+{com}. 
+. *rename,label, and keep id, parent one 97 income, parent two 97 inc, and education variables 
+. rename r0000100 id
+{res}{txt}
+{com}. 
+. label variable id "identification number"
+{txt}
+{com}. 
+. rename r0609800 parentone97inc
+{res}{txt}
+{com}. 
+. label variable parentone97inc "parent one 97 income from wages and salary"
+{txt}
+{com}. 
+. rename r0610500 parenttwo97inc
+{res}{txt}
+{com}. 
+. label variable parenttwo97inc "parent two 97 income from wages and salary"
+{txt}
+{com}. 
+. rename z9083900 education
+{res}{txt}
+{com}. 
+. label variable education "highest level of education attained"
+{txt}
+{com}. 
+. keep id parentone97inc parenttwo97inc education
+{txt}
+{com}. 
+. *merge added variables with existing dataset
+. merge 1:m id using "C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\dofiles_dtafiles\AdvMathIncRankQuantFinalDatasetInstruments.dta
+{res}
+{txt}{col 5}Result{col 38}# of obs.
+{col 5}{hline 41}
+{col 5}not matched{col 30}{res}           5,442
+{txt}{col 9}from master{col 30}{res}           5,442{txt}  (_merge==1)
+{col 9}from using{col 30}{res}               0{txt}  (_merge==2)
+
+{col 5}matched{col 30}{res}           3,542{txt}  (_merge==3)
+{col 5}{hline 41}
+
+{com}. 
+. *drop cases only on the master dataset
+. drop if _merge == 1 
+{txt}(5,442 observations deleted)
+
+{com}. 
+. *drop if missing values for avginc20172019 
+. drop if avginc20172019 == .
+{txt}(0 observations deleted)
+
+{com}. 
+. *drop if 0 values for avginc20172019, avginc9799,  or education
+. drop if avginc20172019 == 0| avginc9799 == 0| avgincomepovratio9799 == 0| education < 0
+{txt}(66 observations deleted)
+
+{com}. 
+. *drop premature incomerank variable 
+. drop incomerank
+{txt}
+{com}. 
+. *create percentile rank variables for child income then label variables 
+. egen n = count (avginc20172019)
+{txt}
+{com}. 
+. egen i = rank (avginc20172019), track
+{txt}
+{com}. 
+. gen incomerank = ((i-1) / (n-1)) * 100 
+{txt}
+{com}. 
+. drop n i 
+{txt}
+{com}. 
+. label variable incomerank "percentile rank of average of 2017 and 2019 income from salary and wages"
+{txt}
+{com}. 
+. *create dummy variables for education levels
+. generate hsdiploma = 0
+{txt}
+{com}. 
+. replace hsdiploma = 1 if education == 2
+{txt}(1,384 real changes made)
+
+{com}. 
+. generate belowbachelors = 0
+{txt}
+{com}. 
+. replace belowbachelors = 1 if education == 3
+{txt}(345 real changes made)
+
+{com}. 
+. generate bachelorsabove = 0
+{txt}
+{com}. 
+. replace bachelorsabove = 1 if education > = 4
+{txt}(1,283 real changes made)
+
+{com}. 
+. summarize hsdiploma belowbachelors bachelorsabove 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 3}hsdiploma {c |}{res}      3,476    .3981588    .4895889          0          1
+{txt}belowbache~s {c |}{res}      3,476     .099252    .2990431          0          1
+{txt}bachelorsa~e {c |}{res}      3,476    .3691024    .4826312          0          1
+{txt}
+{com}. 
+. summarize education if hsdiploma == 0 & belowbachelors == 0 & bachelorsabove == 0
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 3}education {c |}{res}        464    .7090517    .4546899          0          1
+{txt}
+{com}. 
+. *transform total state expenditures on STEM reform, total recipients of STEM reform and average household income from 97-99 variables for better interpretation of coefficients
+. generate expend2 = expend/1000000
+{txt}
+{com}. 
+. generate rec2 = rec/1000
+{txt}
+{com}. 
+. generate avginc9799thou = avginc9799/1000
+{txt}
+{com}. 
+. *drop any cases with zero values for the income percentile rank variables. 
+. drop if incomerank == 0
+{txt}(1 observation deleted)
+
+{com}. 
+. *save final dataset
+. save "AdvMathIncRankQuantFinalDataset.dta"
+{txt}file AdvMathIncRankQuantFinalDataset.dta saved
+
+{com}. 
+. 
+. 
+{txt}end of do-file
+
+{com}. summarize hsdiploma
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 3}hsdiploma {c |}{res}      3,475    .3979856    .4895529          0          1
+
+{com}. summarize belowbachelors
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+belowbache~s {c |}{res}      3,475    .0992806    .2990814          0          1
+
+{com}. summarize bachelorsabove
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+bachelorsa~e {c |}{res}      3,475    .3692086      .48266          0          1
+
+{com}. summarize if hsdiploma == 0
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}id {c |}{res}      2,092    4394.651    2486.998          8       9016
+{txt}parentone9~c {c |}{res}      2,092    16451.63    18681.56         -4      90254
+{txt}parenttwo9~c {c |}{res}      2,092    20241.13    28293.79         -4     184111
+{txt}{space 3}education {c |}{res}      2,092    3.397706    1.655839          0          7
+{txt}{space 6}biosex {c |}{res}      2,092    1.529637    .4992402          1          2
+{txt}{hline 13}{c +}{hline 57}
+{space 2}birthmonth {c |}{res}      2,092    6.448853     3.40896          1         12
+{txt}{space 3}birthyear {c |}{res}      2,092    1981.847    1.408292       1980       1984
+{txt}{space 2}hhincome97 {c |}{res}      1,884    53871.99    43813.17          0     246474
+{txt}hhincomep~97 {c |}{res}      1,880    332.5846    286.9396          0       1627
+{txt}headofhou~97 {c |}{res}      2,092    2.283461    1.825599         -3         10
+{txt}{hline 13}{c +}{hline 57}
+{space 4}hhsize97 {c |}{res}      2,092     4.40392    1.418213          2         16
+{txt}typeofsample {c |}{res}      2,092    .8011472    .3992324          0          1
+{txt}raceethnic~y {c |}{res}      2,092    3.018642    1.279697          1          4
+{txt}{space 2}hhincome98 {c |}{res}        332    63253.77     88305.2          0     425586
+{txt}hhincomep~98 {c |}{res}        329    386.6322    612.7038          0       3227
+{txt}{hline 13}{c +}{hline 57}
+{space 2}hhincome99 {c |}{res}        794    56417.06    55333.61          0     291681
+{txt}hhincomep~99 {c |}{res}        791    346.3692    345.7935          0       2009
+{txt}totaladvma~s {c |}{res}      2,092    126.5989    118.7151          0        750
+{txt}{space 2}income2017 {c |}{res}      1,800    57754.51    46530.92          0     235884
+{txt}{space 2}income2019 {c |}{res}      1,870    66343.29    58454.49          0     328451
+{txt}{hline 13}{c +}{hline 57}
+totalmathc~q {c |}{res}      2,092    512.1893    688.3603        200       4000
+{txt}totalmathc~e {c |}{res}      2,092    5.121893    6.883603          2         40
+{txt}advmathcre~d {c |}{res}      2,092    1.265989    1.187151          0        7.5
+{txt}{space 6}female {c |}{res}      2,092    .5296367    .4992402          0          1
+{txt}bothbiopar~s {c |}{res}      2,092    .5564054     .496927          0          1
+{txt}{hline 13}{c +}{hline 57}
+{space 7}white {c |}{res}      2,092    .6128107     .487224          0          1
+{txt}realhhinc~97 {c |}{res}      1,884    53871.99    43813.17          0     246474
+{txt}realhhinc~98 {c |}{res}        332    64239.04    89680.67          0   432215.1
+{txt}realhhinc~99 {c |}{res}        794    58561.26    57436.63          0   302766.7
+{txt}{space 2}avginc9799 {c |}{res}      2,092    56194.68     48854.5        140   432215.1
+{txt}{hline 13}{c +}{hline 57}
+avginco~9799 {c |}{res}      2,092    343.2783    320.5065          1       3227
+{txt}average~9799 {c |}{res}      2,092    3.432783    3.205065        .01      32.27
+{txt}realinc~2017 {c |}{res}      1,800    55360.31    44601.99          0   226105.5
+{txt}realinc~2019 {c |}{res}      1,870    66343.29    58454.49          0     328451
+{txt}avg~20172019 {c |}{res}      2,092    59525.96    50370.76        200     328451
+{txt}{hline 13}{c +}{hline 57}
+{space 3}logavginc {c |}{res}      2,092    10.67056    .9008759   5.298317   12.70214
+{txt}{space 9}age {c |}{res}      2,092    14.15296    1.408292         12         16
+{txt}{space 4}hscohort {c |}{res}      2,092    1995.847    1.408292       1994       1998
+{txt}highschool~e {c |}{res}      2,092    25.75956    15.08608          1         50
+{txt}{space 9}exp {c |}{res}      2,092    2.255736    2.327983          0          5
+{txt}{hline 13}{c +}{hline 57}
+{space 9}rec {c |}{res}      2,092    4559.651    8265.966          0      36165
+{txt}{space 6}expend {c |}{res}      2,092    1.60e+07    2.92e+07          0   1.33e+08
+{txt}{space 10}s1 {c |}{res}      2,092    .0210325     .143527          0          1
+{txt}{space 10}s2 {c |}{res}      2,092    .0100382    .0997107          0          1
+{txt}{space 10}s3 {c |}{res}      2,092    .0253346    .1571769          0          1
+{txt}{hline 13}{c +}{hline 57}
+{space 10}s4 {c |}{res}      2,092    .0086042     .092381          0          1
+{txt}{space 10}s5 {c |}{res}      2,092    .0970363     .296078          0          1
+{txt}{space 10}s6 {c |}{res}      2,092    .0248566    .1557252          0          1
+{txt}{space 10}s7 {c |}{res}      2,092    .0143403    .1189179          0          1
+{txt}{space 10}s8 {c |}{res}      2,092    .0047801    .0689894          0          1
+{txt}{hline 13}{c +}{hline 57}
+{space 10}s9 {c |}{res}      2,092     .001434    .0378505          0          1
+{txt}{space 9}s10 {c |}{res}      2,092    .0286807    .1669474          0          1
+{txt}{space 9}s11 {c |}{res}      2,092    .0205545    .1419212          0          1
+{txt}{space 9}s12 {c |}{res}      2,092    .0473231    .2123799          0          1
+{txt}{space 9}s13 {c |}{res}      2,092    .0258126    .1586139          0          1
+{txt}{hline 13}{c +}{hline 57}
+{space 9}s14 {c |}{res}      2,092     .000956    .0309122          0          1
+{txt}{space 9}s15 {c |}{res}      2,092    .0138623    .1169474          0          1
+{txt}{space 9}s16 {c |}{res}      2,092    .0066922    .0815509          0          1
+{txt}{space 9}s17 {c |}{res}      2,092    .0138623    .1169474          0          1
+{txt}{space 9}s18 {c |}{res}      2,092    .0215105    .1451133          0          1
+{txt}{hline 13}{c +}{hline 57}
+{space 9}s19 {c |}{res}      2,092    .0100382    .0997107          0          1
+{txt}{space 9}s20 {c |}{res}      2,092    .0559273    .2298363          0          1
+{txt}{space 9}s21 {c |}{res}      2,092    .0181644    .1335778          0          1
+{txt}{space 9}s22 {c |}{res}      2,092    .0167304    .1282901          0          1
+{txt}{space 9}s23 {c |}{res}      2,092    .0320268    .1761133          0          1
+{txt}{hline 13}{c +}{hline 57}
+{space 9}s24 {c |}{res}      2,092    .0167304    .1282901          0          1
+{txt}{space 9}s25 {c |}{res}      2,092    .0215105    .1451133          0          1
+{txt}{space 9}s26 {c |}{res}      2,092    .0071702    .0843929          0          1
+{txt}{space 9}s27 {c |}{res}      2,092    .0645315    .2457562          0          1
+{txt}{space 9}s28 {c |}{res}      2,092    .0444551    .2061532          0          1
+{txt}{hline 13}{c +}{hline 57}
+{space 9}s29 {c |}{res}      2,092    .0100382    .0997107          0          1
+{txt}{space 9}s30 {c |}{res}      2,092    .0210325     .143527          0          1
+{txt}{space 9}s31 {c |}{res}      2,092    .0167304    .1282901          0          1
+{txt}{space 9}s32 {c |}{res}      2,092    .0090822    .0948896          0          1
+{txt}{space 9}s33 {c |}{res}      2,092    .0344168    .1823409          0          1
+{txt}{hline 13}{c +}{hline 57}
+{space 9}s34 {c |}{res}      2,092     .000478    .0218635          0          1
+{txt}{space 9}s35 {c |}{res}      2,092    .0172084    .1300783          0          1
+{txt}{space 9}s36 {c |}{res}      2,092    .0143403    .1189179          0          1
+{txt}{space 9}s37 {c |}{res}      2,092    .0200765    .1402955          0          1
+{txt}{space 9}s38 {c |}{res}      2,092    .0922562    .2894565          0          1
+{txt}{hline 13}{c +}{hline 57}
+{space 9}s39 {c |}{res}      2,092    .0119503    .1086882          0          1
+{txt}{space 9}s40 {c |}{res}      2,092    .0387189    .1929704          0          1
+{txt}{space 9}s41 {c |}{res}      2,092    .0138623    .1169474          0          1
+{txt}{space 9}s42 {c |}{res}      2,092    .0258126    .1586139          0          1
+{txt}{space 10}c1 {c |}{res}      2,092    .2246654    .4174616          0          1
+{txt}{hline 13}{c +}{hline 57}
+{space 10}c2 {c |}{res}      2,092    .2327916    .4227116          0          1
+{txt}{space 10}c3 {c |}{res}      2,092    .1859465    .3891565          0          1
+{txt}{space 10}c4 {c |}{res}      2,092    .1840344    .3876049          0          1
+{txt}{space 10}c5 {c |}{res}      2,092    .1725621    .3779586          0          1
+{txt}{space 6}_merge {c |}{res}      2,092           3           0          3          3
+{txt}{hline 13}{c +}{hline 57}
+{space 2}incomerank {c |}{res}      2,092    54.00713    29.43621   .1726619   99.65468
+{txt}{space 3}hsdiploma {c |}{res}      2,092           0           0          0          0
+{txt}belowbache~s {c |}{res}      2,092     .164914    .3711916          0          1
+{txt}bachelorsa~e {c |}{res}      2,092    .6132887     .487113          0          1
+{txt}{space 5}expend2 {c |}{res}      2,092    16.04025    29.15204          0   132.7965
+{txt}{hline 13}{c +}{hline 57}
+{space 8}rec2 {c |}{res}      2,092    4.559652    8.265966          0     36.165
+{txt}avginc9799~u {c |}{res}      2,092    56.19468     48.8545        .14   432.2151
+
+{com}. exit, clear

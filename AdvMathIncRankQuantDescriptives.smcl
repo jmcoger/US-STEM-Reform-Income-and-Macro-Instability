@@ -1,0 +1,177 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\logfiles\AdvMathIncRankQuantDescriptives.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}24 Aug 2022, 12:21:59
+{txt}
+{com}. 
+. *install estout package
+. ssc install estout, replace
+{txt}checking {hilite:estout} consistency and verifying not already installed...
+all files already exist and are up to date.
+
+{com}. 
+. which estout  // check versions
+{txt}C:\Users\jcoger\ado\plus\e\estout.ado
+{res}*! version 3.30  25mar2022  Ben Jann
+{txt}
+{com}. 
+. which esttab
+{txt}C:\Users\jcoger\ado\plus\e\esttab.ado
+{res}*! version 2.1.0  19may2021  Ben Jann
+*! wrapper for estout
+{txt}
+{com}. 
+. *Define the directory
+. global PATH "C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\tables"
+{txt}
+{com}. cd $PATH
+{res}C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\tables
+{txt}
+{com}. 
+. *open final dataset with instruments 
+. use "C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\dofiles_dtafiles\AdvMathIncRankQuantFinalDataset.dta"
+{txt}
+{com}. 
+. *drop if incomerank equals 0
+. drop if incomerank == 0
+{txt}(0 observations deleted)
+
+{com}. 
+. *create table ouput for independent and dependent variable summary statistics 
+. tabstat female white bothbioparents hsdiploma belowbachelors bachelorsabove age avginc9799 averageincomepovratio9799 totalmathcreditsgraduate exp rec expend hhsize97 advmathcreditsearned avginc20172019 incomerank , c(stat) stat(mean sd count)
+
+{txt}{ralign 12:variable} {...}
+{c |}      mean        sd         N
+{hline 13}{c +}{hline 30}
+{ralign 12:female} {...}
+{c |}{...}
+ {res} .4926619  .5000181      3475
+{txt}{ralign 12:white} {...}
+{c |}{...}
+ {res} .5706475   .495055      3475
+{txt}{ralign 12:bothbiopar~s} {...}
+{c |}{...}
+ {res} .5243165  .4994802      3475
+{txt}{ralign 12:hsdiploma} {...}
+{c |}{...}
+ {res} .3979856  .4895529      3475
+{txt}{ralign 12:belowbache~s} {...}
+{c |}{...}
+ {res} .0992806  .2990814      3475
+{txt}{ralign 12:bachelorsa~e} {...}
+{c |}{...}
+ {res} .3692086    .48266      3475
+{txt}{ralign 12:age} {...}
+{c |}{...}
+ {res} 14.15108  1.424322      3475
+{txt}{ralign 12:avginc9799} {...}
+{c |}{...}
+ {res} 52086.47  45969.72      3475
+{txt}{ralign 12:average~9799} {...}
+{c |}{...}
+ {res} 3.173536   2.97838      3475
+{txt}{ralign 12:totalmathc~e} {...}
+{c |}{...}
+ {res} 5.341295  7.193041      3475
+{txt}{ralign 12:exp} {...}
+{c |}{...}
+ {res} 2.355683  2.336439      3475
+{txt}{ralign 12:rec} {...}
+{c |}{...}
+ {res} 4969.659  8651.328      3475
+{txt}{ralign 12:expend} {...}
+{c |}{...}
+ {res} 1.74e+07  3.04e+07      3475
+{txt}{ralign 12:hhsize97} {...}
+{c |}{...}
+ {res} 4.417554  1.456244      3475
+{txt}{ralign 12:advmathcre~d} {...}
+{c |}{...}
+ {res} 1.031321  1.101165      3475
+{txt}{ralign 12:avg~20172019} {...}
+{c |}{...}
+ {res} 53442.28  46005.74      3475
+{txt}{ralign 12:incomerank} {...}
+{c |}{...}
+ {res}  49.9523  28.87422      3475
+{txt}{hline 13}{c BT}{hline 30}
+
+{com}. 
+. ereturn list
+{txt}
+{com}. 
+. est clear  // clear the est locals
+{txt}
+{com}. 
+. estpost tabstat female white bothbioparents hsdiploma belowbachelors bachelorsabove age avginc9799 averageincomepovratio9799 totalmathcreditsgraduate exp rec expend hhsize97 advmathcreditsearned avginc20172019 incomerank, c(stat) stat(mean sd count)
+
+{txt}Summary statistics: mean sd count
+     for variables: female white bothbioparents hsdiploma belowbachelors bachelorsabove age avginc9799 averageincomepovratio9799 totalmathcreditsgraduate exp rec expend hhsize97 advmathcreditsearned avginc20172019 incomerank
+
+{space 0}{space 0}{ralign 12:}{space 1}{c |}{space 1}{ralign 9:e(mean)}{space 1}{space 1}{ralign 9:e(sd)}{space 1}{space 1}{ralign 9:e(count)}{space 1}
+{space 0}{hline 13}{c   +}{hline 11}{hline 11}{hline 11}
+{space 0}{space 0}{ralign 12:female}{space 1}{c |}{space 1}{ralign 9:{res:{sf: .4926619}}}{space 1}{space 1}{ralign 9:{res:{sf: .5000181}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+{space 0}{space 0}{ralign 12:white}{space 1}{c |}{space 1}{ralign 9:{res:{sf: .5706475}}}{space 1}{space 1}{ralign 9:{res:{sf:  .495055}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+{space 0}{space 0}{ralign 12:bothbiopar~s}{space 1}{c |}{space 1}{ralign 9:{res:{sf: .5243165}}}{space 1}{space 1}{ralign 9:{res:{sf: .4994802}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+{space 0}{space 0}{ralign 12:hsdiploma}{space 1}{c |}{space 1}{ralign 9:{res:{sf: .3979856}}}{space 1}{space 1}{ralign 9:{res:{sf: .4895529}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+{space 0}{space 0}{ralign 12:belowbache~s}{space 1}{c |}{space 1}{ralign 9:{res:{sf: .0992806}}}{space 1}{space 1}{ralign 9:{res:{sf: .2990814}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+{space 0}{space 0}{ralign 12:bachelorsa~e}{space 1}{c |}{space 1}{ralign 9:{res:{sf: .3692086}}}{space 1}{space 1}{ralign 9:{res:{sf:   .48266}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+{space 0}{space 0}{ralign 12:age}{space 1}{c |}{space 1}{ralign 9:{res:{sf: 14.15108}}}{space 1}{space 1}{ralign 9:{res:{sf: 1.424322}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+{space 0}{space 0}{ralign 12:avginc9799}{space 1}{c |}{space 1}{ralign 9:{res:{sf: 52086.47}}}{space 1}{space 1}{ralign 9:{res:{sf: 45969.72}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+{space 0}{space 0}{ralign 12:average~9799}{space 1}{c |}{space 1}{ralign 9:{res:{sf: 3.173536}}}{space 1}{space 1}{ralign 9:{res:{sf:  2.97838}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+{space 0}{space 0}{ralign 12:totalmathc~e}{space 1}{c |}{space 1}{ralign 9:{res:{sf: 5.341295}}}{space 1}{space 1}{ralign 9:{res:{sf: 7.193041}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+{space 0}{space 0}{ralign 12:exp}{space 1}{c |}{space 1}{ralign 9:{res:{sf: 2.355683}}}{space 1}{space 1}{ralign 9:{res:{sf: 2.336439}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+{space 0}{space 0}{ralign 12:rec}{space 1}{c |}{space 1}{ralign 9:{res:{sf: 4969.659}}}{space 1}{space 1}{ralign 9:{res:{sf: 8651.328}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+{space 0}{space 0}{ralign 12:expend}{space 1}{c |}{space 1}{ralign 9:{res:{sf: 1.74e+07}}}{space 1}{space 1}{ralign 9:{res:{sf: 3.04e+07}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+{space 0}{space 0}{ralign 12:hhsize97}{space 1}{c |}{space 1}{ralign 9:{res:{sf: 4.417554}}}{space 1}{space 1}{ralign 9:{res:{sf: 1.456244}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+{space 0}{space 0}{ralign 12:advmathcre~d}{space 1}{c |}{space 1}{ralign 9:{res:{sf: 1.031321}}}{space 1}{space 1}{ralign 9:{res:{sf: 1.101165}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+{space 0}{space 0}{ralign 12:avg~20172019}{space 1}{c |}{space 1}{ralign 9:{res:{sf: 53442.28}}}{space 1}{space 1}{ralign 9:{res:{sf: 46005.74}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+{space 0}{space 0}{ralign 12:incomerank}{space 1}{c |}{space 1}{ralign 9:{res:{sf:  49.9523}}}{space 1}{space 1}{ralign 9:{res:{sf: 28.87422}}}{space 1}{space 1}{ralign 9:{res:{sf:     3475}}}{space 1}
+
+{com}. 
+. esttab, ///
+>  cells("mean(fmt(%13.2fc)) sd(fmt(%13.2fc)) count") nonumber ///
+>   nomtitle nonote noobs collabels("Mean" "SD" "N")
+{res}
+{txt}{hline 51}
+{txt}                     Mean           SD            N
+{txt}{hline 51}
+{txt}female      {res}         0.49         0.50     3,475.00{txt}
+{txt}white       {res}         0.57         0.50     3,475.00{txt}
+{txt}bothbiopar~s{res}         0.52         0.50     3,475.00{txt}
+{txt}hsdiploma   {res}         0.40         0.49     3,475.00{txt}
+{txt}belowbache~s{res}         0.10         0.30     3,475.00{txt}
+{txt}bachelorsa~e{res}         0.37         0.48     3,475.00{txt}
+{txt}age         {res}        14.15         1.42     3,475.00{txt}
+{txt}avginc9799  {res}    52,086.47    45,969.72     3,475.00{txt}
+{txt}average~9799{res}         3.17         2.98     3,475.00{txt}
+{txt}totalmathc~e{res}         5.34         7.19     3,475.00{txt}
+{txt}exp         {res}         2.36         2.34     3,475.00{txt}
+{txt}rec         {res}     4,969.66     8,651.33     3,475.00{txt}
+{txt}expend      {res} 17,369,642.27 30,420,987.25     3,475.00{txt}
+{txt}hhsize97    {res}         4.42         1.46     3,475.00{txt}
+{txt}advmathcre~d{res}         1.03         1.10     3,475.00{txt}
+{txt}avg~20172019{res}    53,442.28    46,005.74     3,475.00{txt}
+{txt}incomerank  {res}        49.95        28.87     3,475.00{txt}
+{txt}{hline 51}
+
+{com}. 
+. *export table as LaTeX file
+. esttab using "./AdvMathIncRankDescriptives.tex", replace ////
+>  cells("mean(fmt(%13.2fc)) sd(fmt(%13.2fc)) count") nonumber ///
+>   nomtitle nonote noobs booktabs f ///
+>   collabels("Mean" "SD" "N")
+{res}{txt}(note: file ./AdvMathIncRankDescriptives.tex not found)
+(output written to {browse  `"./AdvMathIncRankDescriptives.tex"'})
+
+{com}.   
+. log close 
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\jcoger\Documents\Essay1\AdvMathWork\AdvMathIncomeRankQuantileV1\logfiles\AdvMathIncRankQuantDescriptives.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}24 Aug 2022, 12:22:00
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}
